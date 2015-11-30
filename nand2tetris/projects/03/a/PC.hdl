@@ -16,5 +16,19 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    //check inc option
+    Inc16(in=c, out=i);
+    Mux16(a=c, b=i, sel=inc, out=step1);
+
+    //check load option
+    Mux16(a=step1, b=in, sel=load, out=step2);
+
+    //check reset option
+    Mux16(a=step2, b=false, sel=reset, out=step3);
+
+    //Check if we should load
+    Or(a=load, b=inc, out=li);
+    Or(a=li, b=reset, out=loadnew);
+
+    Register(in=step3, load=loadnew, out=c, out=out);
 }
