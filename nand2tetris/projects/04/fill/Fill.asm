@@ -25,8 +25,8 @@
       @LOOP
       D;JEQ
 (SETBLACK)
-      @32767
-      D=A
+      @0
+      D=A-1
       @R0
       M=D
       @FILL
