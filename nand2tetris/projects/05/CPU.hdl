@@ -88,21 +88,15 @@ CHIP CPU {
     And(a=le1, b=instruction[2], out=jle);
 
     /check if always jump
-    Or(a=instruction[0], b=instruction[1], out=jmp1);
-    Or(a=jmp1, b=instruction[2], out=jmp2);
+    And(a=instruction[0], b=instruction[1], out=jmp1);
+    And(a=jmp1, b=instruction[2], out=jmp2);
 
-    
+    Or(a=jgt, b=jeq, out=sjump1);
+    Or(a=sjump1, b=jge, out=sjump2);
+    Or(a=sjump2, b=jlt, out=sjump3);
+    Or(a=sjump3, b=jne, out=sjump4);
+    Or(a=sjump4, b=jle, out=sjump5);
+    Or(a=sjump5, b=jmp2, out = sjump6);
 
-    Xor(a=gt, b=instruction[0], out=nj3satisfied);
-    Not(in=nj3satisfied, out=j3satisfied);
-
-    Xor(a=zr, b=instruction[1], out=nj2satisfied);
-    Not(in=nj2satisfied, out=j2satisfied);
-
-    Xor(a=ng, b=instruction[2], out=nj1satisfied);
-    Not(in=nj1satisfied, out=j1satisfied);
-
-    Or(a=j3satisfied, b=j2satisfied, out=jmpstep1);
-    Or(a=jmpstep1, b=j1satisfied, out=jmpstep2);
-    And(a=jmpstep2, b=instruction[15], out=jmp);
+    And(a=sjump6, b=instruction[15], out=jmp);
 }
