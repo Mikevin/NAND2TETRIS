@@ -16,7 +16,7 @@ namespace HackAssembler
 
         private string[] lines;
 
-        private readonly Regex regex = new Regex("(?<dest>[\\w^]+)?=?(?<comp>[\\w\\d\\+\\-]+);?(?<jump>[\\w]+)?",
+        private readonly Regex regex = new Regex("(?<dest>[\\w^]+)?=?(?<comp>[\\w\\d\\+\\-\\!\\|\\&]+);?(?<jump>[\\w]+)?",
             RegexOptions.Compiled);
 
         public Parser(string filePath)
