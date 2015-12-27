@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace HackAssembler
 {
-    static class SymbolTable
+    public static class SymbolTable
     {
         private static Dictionary<string, int> SymbolDict = new Dictionary<string, int>();
+
+        public static int NextAddress { get; private set; } = 16;
 
         static SymbolTable()
         {
@@ -39,7 +41,7 @@ namespace HackAssembler
             SymbolDict.Add("THAT", 4);
         }
 
-        static void addEntry(string symbol, int address)
+        public static void addEntry(string symbol, int address)
         {
             if (SymbolDict.ContainsKey(symbol))
             {
@@ -47,14 +49,19 @@ namespace HackAssembler
             }
 
             SymbolDict.Add(symbol, address);
+
+            if (address == NextAddress)
+            {
+                NextAddress++;
+            }
         }
 
-        static bool contains(string symbol)
+        public static bool contains(string symbol)
         {
             return SymbolDict.ContainsKey(symbol);
         }
 
-        static int GetAddress(string symbol)
+        public static int GetAddress(string symbol)
         {
             int value;
             if (SymbolDict.TryGetValue(symbol, out value))

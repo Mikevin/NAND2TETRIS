@@ -56,10 +56,16 @@ namespace HackAssembler
 
         public void Advance()
         {
+            dest = string.Empty;
+            comp = string.Empty;
+            jump = string.Empty;
+            symbol = string.Empty;
+
             currentLine++;
             string line = lines[currentLine].Trim();
 
-            if (line.StartsWith("//"))
+            if (line.StartsWith("//") ||
+                line.Length == 0)
             {
                 if (hasMoreCommands)
                 {
@@ -70,7 +76,8 @@ namespace HackAssembler
 
             line = CleanLine(line);
 
-            if (line.StartsWith("@"))
+            if (line.StartsWith("@") ||
+                line.StartsWith("("))
             {
                 ParseSymbol(line);
             }

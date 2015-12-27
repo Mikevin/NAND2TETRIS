@@ -13,7 +13,7 @@
                 case "A":
                     return "100";
                 default:
-                    return string.Empty;
+                    return "000";
             }
         }
 
@@ -102,7 +102,7 @@
                 case "JMP":
                     return "111";
                 default:
-                    return string.Empty;
+                    return "000";
             }
         }
     }
