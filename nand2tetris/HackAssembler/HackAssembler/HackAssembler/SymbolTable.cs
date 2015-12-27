@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace HackAssembler
 {
     public static class SymbolTable
     {
-        private static Dictionary<string, int> SymbolDict = new Dictionary<string, int>();
-
-        public static int NextAddress { get; private set; } = 16;
+        private static readonly Dictionary<string, int> SymbolDict = new Dictionary<string, int>();
 
         static SymbolTable()
         {
@@ -40,6 +34,8 @@ namespace HackAssembler
             SymbolDict.Add("THIS", 3);
             SymbolDict.Add("THAT", 4);
         }
+
+        public static int NextAddress { get; private set; } = 15;
 
         public static void addEntry(string symbol, int address)
         {

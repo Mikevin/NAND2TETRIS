@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace HackAssembler
 {
@@ -17,16 +12,32 @@ namespace HackAssembler
             L_COMMAND
         }
 
-        private string[] lines;
         private int currentLine = -1;
 
-        private Regex regex = new Regex("(?<dest>[\\w^]?)=?(?<comp>[\\w\\d\\+\\-]+);?(?<jump>[\\w]+)?", RegexOptions.Compiled);
+        private string[] lines;
+
+        private readonly Regex regex = new Regex("(?<dest>[\\w^]?)=?(?<comp>[\\w\\d\\+\\-]+);?(?<jump>[\\w]+)?",
+            RegexOptions.Compiled);
 
         public Parser(string filePath)
         {
-            FilePath=filePath;
+            FilePath = filePath;
             Initialize();
         }
+
+        public bool hasMoreCommands { get; private set; }
+
+        public string FilePath { get; }
+
+        public CommandType commandType { get; private set; }
+
+        public string symbol { get; private set; }
+
+        public string dest { get; private set; }
+
+        public string comp { get; private set; }
+
+        public string jump { get; private set; }
 
         private void Initialize()
         {
@@ -40,20 +51,6 @@ namespace HackAssembler
             Advance();
         }
 
-        public bool hasMoreCommands { get; private set; } = false;
-
-        public string FilePath { get; private set; }
-
-        public CommandType commandType { get; private set; }
-
-        public string symbol { get; private set; }
-
-        public string dest { get; private set; }
-
-        public string comp { get; private set; }
-
-        public string jump { get; private set; }
-
         public void Advance()
         {
             dest = string.Empty;
@@ -62,7 +59,7 @@ namespace HackAssembler
             symbol = string.Empty;
 
             currentLine++;
-            string line = lines[currentLine].Trim();
+            var line = lines[currentLine].Trim();
 
             if (line.StartsWith("//") ||
                 line.Length == 0)
@@ -76,10 +73,13 @@ namespace HackAssembler
 
             line = CleanLine(line);
 
-            if (line.StartsWith("@") ||
-                line.StartsWith("("))
+            if (line.StartsWith("@"))
             {
-                ParseSymbol(line);
+                ParseASymbol(line);
+            }
+            else if (line.StartsWith("("))
+            {
+                ParseLSymbol(line);
             }
             else
             {
@@ -131,18 +131,17 @@ namespace HackAssembler
             }
         }
 
-        private void ParseSymbol(string line)
+        private void ParseASymbol(string line)
         {
-            string symbolvalue = line.TrimStart('@');
-            int number;
-            if (int.TryParse(symbolvalue, out number))
-            {
-                commandType = CommandType.A_COMMAND;
-            }
-            else
-            {
-                commandType = CommandType.L_COMMAND;
-            }
+            var symbolvalue = line.TrimStart('@');
+            commandType = CommandType.A_COMMAND;
+            symbol = symbolvalue;
+        }
+
+        private void ParseLSymbol(string line)
+        {
+            var symbolvalue = line.Trim('(').Trim(')');
+            commandType = CommandType.L_COMMAND;
             symbol = symbolvalue;
         }
     }

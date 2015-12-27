@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace HackAssembler
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            string path = @"E:\Learning\Nand2Tetris\nand2tetris\projects\06\max\Max.asm";
+            var path = @"E:\Learning\Nand2Tetris\nand2tetris\projects\06\max\Max.asm";
 
             var main = new Main(path);
             var result = main.Translate();
 
-            using (StreamWriter writer =
+            using (var writer =
                 new StreamWriter(path + ".hack"))
             {
-                foreach (string line in result)
+                foreach (var line in result)
                 {
                     writer.WriteLine(line);
                 }

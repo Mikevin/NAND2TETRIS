@@ -13,7 +13,7 @@ namespace HackAssembler
             parser = new Parser(FilePath);
         }
 
-        public string FilePath { get; private set; }
+        public string FilePath { get; }
 
         public List<string> Translate()
         {
@@ -23,12 +23,20 @@ namespace HackAssembler
 
         private void FirstPass()
         {
+            var counter = 0;
             while (parser.hasMoreCommands)
             {
                 parser.Advance();
                 if (parser.commandType == Parser.CommandType.L_COMMAND)
                 {
-                    SymbolTable.addEntry(parser.symbol, SymbolTable.NextAddress);
+                    if (!SymbolTable.contains(parser.symbol))
+                    {
+                        SymbolTable.addEntry(parser.symbol, counter);
+                    }
+                }
+                else
+                {
+                    counter++;
                 }
             }
         }
@@ -44,16 +52,20 @@ namespace HackAssembler
                 string outputBinary = null;
                 switch (parser.commandType)
                 {
-                        case Parser.CommandType.A_COMMAND:
-                            var symbol = int.Parse(parser.symbol);
-                            outputBinary = 0 + Convert.ToString(symbol, 2).PadLeft(15, '0');
-                        break;
-                        case Parser.CommandType.L_COMMAND:
+                    case Parser.CommandType.A_COMMAND:
+                        int value;
+                        if (int.TryParse(parser.symbol, out value))
+                        {
+                            outputBinary = 0 + Convert.ToString(value, 2).PadLeft(15, '0');
+                        }
+                        else
+                        {
                             var address = SymbolTable.GetAddress(parser.symbol);
                             outputBinary = 0 + Convert.ToString(address, 2).PadLeft(15, '0');
+                        }
                         break;
-                        case Parser.CommandType.C_COMMAND:
-                            outputBinary = TranslateCommand();
+                    case Parser.CommandType.C_COMMAND:
+                        outputBinary = TranslateCommand();
                         break;
                 }
                 if (!string.IsNullOrEmpty(outputBinary))
@@ -67,7 +79,7 @@ namespace HackAssembler
 
         private string TranslateCommand()
         {
-            string binary = "111";
+            var binary = "111";
             binary += Code.comp(parser.comp);
             binary += Code.dest(parser.dest);
             binary += Code.jump(parser.jump);
