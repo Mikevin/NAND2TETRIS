@@ -53,16 +53,7 @@ namespace HackAssembler
                 switch (parser.commandType)
                 {
                     case Parser.CommandType.A_COMMAND:
-                        int value;
-                        if (int.TryParse(parser.symbol, out value))
-                        {
-                            outputBinary = 0 + Convert.ToString(value, 2).PadLeft(15, '0');
-                        }
-                        else
-                        {
-                            var address = SymbolTable.GetAddress(parser.symbol);
-                            outputBinary = 0 + Convert.ToString(address, 2).PadLeft(15, '0');
-                        }
+                        outputBinary = TranslateAddress();
                         break;
                     case Parser.CommandType.C_COMMAND:
                         outputBinary = TranslateCommand();
@@ -75,6 +66,26 @@ namespace HackAssembler
             }
 
             return output;
+        }
+
+        private string TranslateAddress()
+        {
+            string outputBinary;
+            int value;
+            if (int.TryParse(parser.symbol, out value))
+            {
+                outputBinary = 0 + Convert.ToString(value, 2).PadLeft(15, '0');
+            }
+            else
+            {
+                if (!SymbolTable.contains(parser.symbol))
+                {
+                    SymbolTable.addEntry(parser.symbol, SymbolTable.NextAddress);
+                }
+                var address = SymbolTable.GetAddress(parser.symbol);
+                outputBinary = 0 + Convert.ToString(address, 2).PadLeft(15, '0');
+            }
+            return outputBinary;
         }
 
         private string TranslateCommand()

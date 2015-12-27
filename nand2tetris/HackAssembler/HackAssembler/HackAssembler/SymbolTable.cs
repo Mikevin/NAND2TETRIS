@@ -35,7 +35,7 @@ namespace HackAssembler
             SymbolDict.Add("THAT", 4);
         }
 
-        public static int NextAddress { get; private set; } = 15;
+        public static int NextAddress { get; private set; } = 16;
 
         public static void addEntry(string symbol, int address)
         {

@@ -6,7 +6,7 @@ namespace HackAssembler
     {
         private static void Main(string[] args)
         {
-            var path = @"E:\Learning\Nand2Tetris\nand2tetris\projects\06\max\Max.asm";
+            var path = @"E:\Learning\Nand2Tetris\nand2tetris\projects\06\rect\Rect.asm";
 
             var main = new Main(path);
             var result = main.Translate();
