@@ -12,12 +12,15 @@ namespace VMTranslator
     {
         const string _inputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\StackArithmetic\SimpleAdd\SimpleAdd.vm";
         private static List<string> linesList;
+        private static List<string> outputLinesList;
         private static List<Command> commandsList;
 
         static void Main(string[] args)
         {
             PrepareFile();
             PopulateCommandList();
+            var codeWriter = new CodeWriter(commandsList);
+            outputLinesList = codeWriter.Write();
             Console.WriteLine(commandsList.Count);
         }
 
