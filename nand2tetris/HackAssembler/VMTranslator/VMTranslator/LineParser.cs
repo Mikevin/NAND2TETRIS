@@ -26,6 +26,10 @@ namespace VMTranslator
         private static Command CreateCommand()
         {
             Command.commandType commandType = ParseCommandType(type);
+            if (commandType == Command.commandType.C_ARITHMETIC)
+            {
+                arg1 = type;
+            }
             return new Command(commandType, arg1, arg2);
         }
 
