@@ -25,21 +25,36 @@ namespace VMTranslator
                 else if (command.Type == Command.commandType.C_PUSH ||
                          command.Type == Command.commandType.C_POP)
                 {
-                    outputLinesList.AddRange(WritePushPop(command));
+                    outputLinesList.Add(WritePushPop(command));
                 }
             }
 
             return outputLinesList;
         }
 
-        private IEnumerable<string> WritePushPop(Command command)
+        private string WritePushPop(Command command)
         {
-            throw new NotImplementedException();
+            string result;
+
+            switch (command.Type)
+            {
+                case Command.commandType.C_PUSH:
+                    result = "push";
+                    break;
+                case Command.commandType.C_POP:
+                    result = "pop";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("This command is not of type PUSH or POP.");
+            }
+
+            return result + " " + command.arg2;
         }
 
         private IEnumerable<string> WriteArithmetic(Command command)
         {
-            throw new NotImplementedException();
+            var translator = new ArithmeticTranslator(command);
+            return translator.Translate();
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace VMTranslator
+﻿using VMTranslator.Types;
+
+namespace VMTranslator
 {
-    internal class Command
+    public class Command
     {
         public Command(commandType type, string arg1, int arg2)
         {
@@ -9,7 +11,7 @@
             this.arg2 = arg2;
         }
 
-        internal enum commandType
+        public enum commandType
         {
             C_ARITHMETIC,
             C_PUSH,

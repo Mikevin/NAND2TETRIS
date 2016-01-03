@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VMTranslator
 {
     class Program
     {
         const string _inputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\StackArithmetic\SimpleAdd\SimpleAdd.vm";
+
+        public string _FileName => Path.GetFileName(_inputFile);
+
         private static List<string> linesList;
         private static List<string> outputLinesList;
         private static List<Command> commandsList;
