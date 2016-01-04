@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using VMTranslator.Logic;
 
 namespace VMTranslator
 {
@@ -19,6 +20,8 @@ namespace VMTranslator
         {
             PrepareFile();
             PopulateCommandList();
+            var memoryManager = new MemoryManager(commandsList);
+            commandsList = memoryManager.Parse();
             var codeWriter = new CodeWriter(commandsList);
             outputLinesList = codeWriter.Write();
             Console.WriteLine(commandsList.Count);

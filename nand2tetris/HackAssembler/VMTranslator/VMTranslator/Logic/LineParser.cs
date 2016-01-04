@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using VMTranslator.Types;
+using VMTranslator.Types.Commands;
 
 namespace VMTranslator
 {
@@ -10,7 +12,7 @@ namespace VMTranslator
         private static string type = string.Empty;
         private static string arg1 = string.Empty;
         private static int arg2;
-        
+
 
         public static Command GetCommand(string line)
         {
@@ -25,12 +27,24 @@ namespace VMTranslator
 
         private static Command CreateCommand()
         {
-            Command.commandType commandType = ParseCommandType(type);
-            if (commandType == Command.commandType.C_ARITHMETIC)
+            switch (type)
             {
-                arg1 = type;
+                case "add":
+                case "sub":
+                case "neg":
+                case "eq":
+                case "gt":
+                case "lt":
+                case "and":
+                case "or":
+                case "not":
+                    return new ArithmeticCommand(arg1, arg2);
+                case "push":
+                case "pop":
+                    return new PushPopCommand(arg1, arg2);
             }
-            return new Command(commandType, arg1, arg2);
+
+            throw new NotSupportedException("Type: " + type + " is not supported.");
         }
 
         private static Command.commandType ParseCommandType(string s)

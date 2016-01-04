@@ -1,54 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using VMTranslator.Types.Commands;
 
 namespace VMTranslator
 {
-    public enum ArithmeticOperation
-    {
-        add,
-        sub,
-        neg,
-        eq,
-        gt,
-        lt,
-        and,
-        or,
-        not
-    }
+
 
     public class ArithmeticTranslator
     {
         public Command Command { get; }
-        private ArithmeticOperation _arithmeticOperation;
+        private ArithmeticCommand.ArithmeticOperation _arithmeticOperation;
 
-        public ArithmeticTranslator(Command command)
+        public ArithmeticTranslator(Command Command)
         {
-            this.Command = command;
+            this.Command = Command;
             _arithmeticOperation = parseArithmeticOperation();
         }
 
-        private ArithmeticOperation parseArithmeticOperation()
+        private ArithmeticCommand.ArithmeticOperation parseArithmeticOperation()
         {
             switch (Command.arg1.ToLower())
             {
                 case "add":
-                    return ArithmeticOperation.add;
+                    return ArithmeticCommand.ArithmeticOperation.add;
                 case "sub":
-                    return ArithmeticOperation.sub;
+                    return ArithmeticCommand.ArithmeticOperation.sub;
                 case "neg":
-                    return ArithmeticOperation.neg;
+                    return ArithmeticCommand.ArithmeticOperation.neg;
                 case "eq":
-                    return ArithmeticOperation.eq;
+                    return ArithmeticCommand.ArithmeticOperation.eq;
                 case "gt":
-                    return ArithmeticOperation.gt;
+                    return ArithmeticCommand.ArithmeticOperation.gt;
                 case "lt":
-                    return ArithmeticOperation.lt;
+                    return ArithmeticCommand.ArithmeticOperation.lt;
                 case "and":
-                    return ArithmeticOperation.and;
+                    return ArithmeticCommand.ArithmeticOperation.and;
                 case "or":
-                    return ArithmeticOperation.or;
+                    return ArithmeticCommand.ArithmeticOperation.or;
                 case "not":
-                    return ArithmeticOperation.not;
+                    return ArithmeticCommand.ArithmeticOperation.not;
                 default:
                     throw new ArgumentOutOfRangeException("This ArithmeticOperation is not supported.");
             }
@@ -60,31 +50,31 @@ namespace VMTranslator
 
             switch (_arithmeticOperation)
             {
-                case ArithmeticOperation.gt:
+                case ArithmeticCommand.ArithmeticOperation.gt:
                     translation = writeGt();
                     break;
-                case ArithmeticOperation.or:
+                case ArithmeticCommand.ArithmeticOperation.or:
                     translation = writeOr();
                     break;
-                case ArithmeticOperation.add:
+                case ArithmeticCommand.ArithmeticOperation.add:
                     translation = writeAdd();
                     break;
-                case ArithmeticOperation.and:
+                case ArithmeticCommand.ArithmeticOperation.and:
                     translation = writeAnd();
                     break;
-                case ArithmeticOperation.eq:
+                case ArithmeticCommand.ArithmeticOperation.eq:
                     translation = writeEq();
                     break;
-                case ArithmeticOperation.lt:
+                case ArithmeticCommand.ArithmeticOperation.lt:
                     translation = writeLt();
                     break;
-                case ArithmeticOperation.neg:
+                case ArithmeticCommand.ArithmeticOperation.neg:
                     translation = writeNeg();
                     break;
-                case ArithmeticOperation.not:
+                case ArithmeticCommand.ArithmeticOperation.not:
                     translation = writeNot();
                     break;
-                case ArithmeticOperation.sub:
+                case ArithmeticCommand.ArithmeticOperation.sub:
                     translation = writeSub();
                     break;
                 default:

@@ -1,12 +1,9 @@
-﻿using VMTranslator.Types;
-
-namespace VMTranslator
+﻿namespace VMTranslator
 {
     public class Command
     {
-        public Command(commandType type, string arg1, int arg2)
+        public Command(string arg1, int arg2)
         {
-            Type = type;
             this.arg1 = arg1;
             this.arg2 = arg2;
         }
@@ -25,10 +22,8 @@ namespace VMTranslator
             INVALID
         }
 
-        public commandType Type { get; private set; }
+        protected string arg1 { get; set; }
 
-        public string arg1 { get; private set; }
-
-        public int arg2 { get; private set; }
+        protected int arg2 { get; set; }
     }
 }

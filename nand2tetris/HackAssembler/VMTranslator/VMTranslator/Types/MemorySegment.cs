@@ -1,20 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VMTranslator.Types
 {
-    enum MemorySegment
+    public static class MemorySegment
     {
-        STATIC,
-        THIS,
-        LOCAL,
-        ARGUMENT,
-        THAT,
-        CONSTANT,
-        POINTER,
-        TEMP
+        public enum SegmentType
+        {
+            STATIC,
+            THIS,
+            LOCAL,
+            ARGUMENT,
+            THAT,
+            CONSTANT,
+            POINTER,
+            TEMP
+        }
+
+        public static SegmentType ParseSegment(string s)
+        {
+            switch (s.ToLower())
+            {
+                case "static":
+                    return SegmentType.STATIC;
+                case "this":
+                    return SegmentType.THIS;
+                case "local":
+                    return SegmentType.LOCAL;
+                case "argument":
+                    return SegmentType.ARGUMENT;
+                case "that":
+                    return SegmentType.THAT;
+                case "constant":
+                    return SegmentType.CONSTANT;
+                case "pointer":
+                    return SegmentType.POINTER;
+                case "temp":
+                    return SegmentType.TEMP;
+                default:
+                    throw new ArgumentException(s + " is not a known SegmentType.");
+            }
+        }
     }
 }

@@ -32,11 +32,11 @@ namespace VMTranslator
             return outputLinesList;
         }
 
-        private string WritePushPop(Command command)
+        private string WritePushPop(Command Command)
         {
             string result;
 
-            switch (command.Type)
+            switch (Command.Type)
             {
                 case Command.commandType.C_PUSH:
                     result = "push";
@@ -48,12 +48,12 @@ namespace VMTranslator
                     throw new ArgumentOutOfRangeException("This command is not of type PUSH or POP.");
             }
 
-            return result + " " + command.arg2;
+            return result + " " + Command.arg2;
         }
 
-        private IEnumerable<string> WriteArithmetic(Command command)
+        private IEnumerable<string> WriteArithmetic(Command Command)
         {
-            var translator = new ArithmeticTranslator(command);
+            var translator = new ArithmeticTranslator(Command);
             return translator.Translate();
         }
     }
