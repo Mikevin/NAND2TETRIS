@@ -1,29 +1,43 @@
-﻿namespace VMTranslator
+﻿using System.Collections.Generic;
+
+namespace VMTranslator
 {
-    public class Command
+    public partial class Command
     {
-        public Command(string arg1, int arg2)
+        private static List<string> _arithmeticBooleanCommands = new List<string> { "add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not" };
+        private static List<string> _pushPopCommands = new List<string> { "push", "pop" };
+
+        public string CommandString { get; }
+        public CommandType CommandType { get; private set; }
+
+        public Command(string command, string arg1, int arg2)
         {
-            this.arg1 = arg1;
-            this.arg2 = arg2;
+            CommandString = command;
+            CommandType = LookupCommand(command);
+            this.Arg1 = arg1;
+            this.Arg2 = arg2;
         }
 
-        public enum commandType
+        public string Arg1 { get; }
+
+        public int Arg2 { get; }
+
+        private CommandType LookupCommand(string command)
         {
-            C_ARITHMETIC,
-            C_PUSH,
-            C_POP,
-            C_LABEL,
-            C_GOTO,
-            C_IF,
-            C_FUNCTION,
-            C_RETURN,
-            C_CALL,
-            INVALID
+            if (_arithmeticBooleanCommands.Contains(command.Trim()))
+            {
+                return CommandType.CArithmetic;
+            }
+            if (command == "push")
+            {
+                return CommandType.CPush;
+            }
+            if (command == "pop")
+            {
+                return CommandType.CPop;
+            }
+
+            return CommandType.Invalid;
         }
-
-        protected string arg1 { get; set; }
-
-        protected int arg2 { get; set; }
     }
 }

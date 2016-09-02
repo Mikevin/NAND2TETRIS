@@ -11,34 +11,34 @@ namespace VMTranslator
         public Command Command { get; }
         private ArithmeticCommand.ArithmeticOperation _arithmeticOperation;
 
-        public ArithmeticTranslator(Command Command)
+        public ArithmeticTranslator(Command command)
         {
-            this.Command = Command;
-            _arithmeticOperation = parseArithmeticOperation();
+            this.Command = command;
+            _arithmeticOperation = ParseArithmeticOperation();
         }
 
-        private ArithmeticCommand.ArithmeticOperation parseArithmeticOperation()
+        private ArithmeticCommand.ArithmeticOperation ParseArithmeticOperation()
         {
-            switch (Command.arg1.ToLower())
+            switch (Command.Arg1.ToLower())
             {
                 case "add":
-                    return ArithmeticCommand.ArithmeticOperation.add;
+                    return ArithmeticCommand.ArithmeticOperation.Add;
                 case "sub":
-                    return ArithmeticCommand.ArithmeticOperation.sub;
+                    return ArithmeticCommand.ArithmeticOperation.Sub;
                 case "neg":
-                    return ArithmeticCommand.ArithmeticOperation.neg;
+                    return ArithmeticCommand.ArithmeticOperation.Neg;
                 case "eq":
-                    return ArithmeticCommand.ArithmeticOperation.eq;
+                    return ArithmeticCommand.ArithmeticOperation.Eq;
                 case "gt":
-                    return ArithmeticCommand.ArithmeticOperation.gt;
+                    return ArithmeticCommand.ArithmeticOperation.Gt;
                 case "lt":
-                    return ArithmeticCommand.ArithmeticOperation.lt;
+                    return ArithmeticCommand.ArithmeticOperation.Lt;
                 case "and":
-                    return ArithmeticCommand.ArithmeticOperation.and;
+                    return ArithmeticCommand.ArithmeticOperation.And;
                 case "or":
-                    return ArithmeticCommand.ArithmeticOperation.or;
+                    return ArithmeticCommand.ArithmeticOperation.Or;
                 case "not":
-                    return ArithmeticCommand.ArithmeticOperation.not;
+                    return ArithmeticCommand.ArithmeticOperation.Not;
                 default:
                     throw new ArgumentOutOfRangeException("This ArithmeticOperation is not supported.");
             }
@@ -50,32 +50,32 @@ namespace VMTranslator
 
             switch (_arithmeticOperation)
             {
-                case ArithmeticCommand.ArithmeticOperation.gt:
-                    translation = writeGt();
+                case ArithmeticCommand.ArithmeticOperation.Gt:
+                    translation = WriteGt();
                     break;
-                case ArithmeticCommand.ArithmeticOperation.or:
-                    translation = writeOr();
+                case ArithmeticCommand.ArithmeticOperation.Or:
+                    translation = WriteOr();
                     break;
-                case ArithmeticCommand.ArithmeticOperation.add:
-                    translation = writeAdd();
+                case ArithmeticCommand.ArithmeticOperation.Add:
+                    translation = WriteAdd();
                     break;
-                case ArithmeticCommand.ArithmeticOperation.and:
-                    translation = writeAnd();
+                case ArithmeticCommand.ArithmeticOperation.And:
+                    translation = WriteAnd();
                     break;
-                case ArithmeticCommand.ArithmeticOperation.eq:
-                    translation = writeEq();
+                case ArithmeticCommand.ArithmeticOperation.Eq:
+                    translation = WriteEq();
                     break;
-                case ArithmeticCommand.ArithmeticOperation.lt:
-                    translation = writeLt();
+                case ArithmeticCommand.ArithmeticOperation.Lt:
+                    translation = WriteLt();
                     break;
-                case ArithmeticCommand.ArithmeticOperation.neg:
-                    translation = writeNeg();
+                case ArithmeticCommand.ArithmeticOperation.Neg:
+                    translation = WriteNeg();
                     break;
-                case ArithmeticCommand.ArithmeticOperation.not:
-                    translation = writeNot();
+                case ArithmeticCommand.ArithmeticOperation.Not:
+                    translation = WriteNot();
                     break;
-                case ArithmeticCommand.ArithmeticOperation.sub:
-                    translation = writeSub();
+                case ArithmeticCommand.ArithmeticOperation.Sub:
+                    translation = WriteSub();
                     break;
                 default:
                     throw new ArithmeticException("Unknown ArithmeticOperation.");
@@ -85,47 +85,47 @@ namespace VMTranslator
             return translation;
         }
 
-        private List<string> writeSub()
+        private List<string> WriteSub()
         {
             throw new NotImplementedException();
         }
 
-        private List<string> writeNot()
+        private List<string> WriteNot()
         {
             throw new NotImplementedException();
         }
 
-        private List<string> writeNeg()
+        private List<string> WriteNeg()
         {
             throw new NotImplementedException();
         }
 
-        private List<string> writeLt()
+        private List<string> WriteLt()
         {
             throw new NotImplementedException();
         }
 
-        private List<string> writeEq()
+        private List<string> WriteEq()
         {
             throw new NotImplementedException();
         }
 
-        private List<string> writeAnd()
+        private List<string> WriteAnd()
         {
             throw new NotImplementedException();
         }
 
-        private List<string> writeAdd()
+        private List<string> WriteAdd()
         {
             throw new NotImplementedException();
         }
 
-        private List<string> writeOr()
+        private List<string> WriteOr()
         {
             throw new NotImplementedException();
         }
 
-        private List<string> writeGt()
+        private List<string> WriteGt()
         {
             throw new NotImplementedException();
         }

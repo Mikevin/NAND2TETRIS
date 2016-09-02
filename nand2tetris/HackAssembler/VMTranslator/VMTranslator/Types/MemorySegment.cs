@@ -6,14 +6,14 @@ namespace VMTranslator.Types
     {
         public enum SegmentType
         {
-            STATIC,
-            THIS,
-            LOCAL,
-            ARGUMENT,
-            THAT,
-            CONSTANT,
-            POINTER,
-            TEMP
+            Static,
+            This,
+            Local,
+            Argument,
+            That,
+            Constant,
+            Pointer,
+            Temp
         }
 
         public static SegmentType ParseSegment(string s)
@@ -21,21 +21,21 @@ namespace VMTranslator.Types
             switch (s.ToLower())
             {
                 case "static":
-                    return SegmentType.STATIC;
+                    return SegmentType.Static;
                 case "this":
-                    return SegmentType.THIS;
+                    return SegmentType.This;
                 case "local":
-                    return SegmentType.LOCAL;
+                    return SegmentType.Local;
                 case "argument":
-                    return SegmentType.ARGUMENT;
+                    return SegmentType.Argument;
                 case "that":
-                    return SegmentType.THAT;
+                    return SegmentType.That;
                 case "constant":
-                    return SegmentType.CONSTANT;
+                    return SegmentType.Constant;
                 case "pointer":
-                    return SegmentType.POINTER;
+                    return SegmentType.Pointer;
                 case "temp":
-                    return SegmentType.TEMP;
+                    return SegmentType.Temp;
                 default:
                     throw new ArgumentException(s + " is not a known SegmentType.");
             }

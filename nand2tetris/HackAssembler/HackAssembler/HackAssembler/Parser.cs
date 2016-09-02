@@ -5,18 +5,18 @@ namespace HackAssembler
 {
     public class Parser
     {
-        public enum CommandType
+        public enum CommandTypeEnum
         {
-            A_COMMAND,
-            C_COMMAND,
-            L_COMMAND
+            ACommand,
+            CCommand,
+            LCommand
         }
 
-        private int currentLine = -1;
+        private int _currentLine = -1;
 
-        private string[] lines;
+        private string[] _lines;
 
-        private readonly Regex regex = new Regex("(?<dest>[\\w^]+)?=?(?<comp>[\\w\\d\\+\\-\\!\\|\\&]+);?(?<jump>[\\w]+)?",
+        private readonly Regex _regex = new Regex("(?<dest>[\\w^]+)?=?(?<comp>[\\w\\d\\+\\-\\!\\|\\&]+);?(?<jump>[\\w]+)?",
             RegexOptions.Compiled);
 
         public Parser(string filePath)
@@ -25,25 +25,25 @@ namespace HackAssembler
             Initialize();
         }
 
-        public bool hasMoreCommands { get; private set; }
+        public bool HasMoreCommands { get; private set; }
 
         public string FilePath { get; }
 
-        public CommandType commandType { get; private set; }
+        public CommandTypeEnum CommandType { get; private set; }
 
-        public string symbol { get; private set; }
+        public string Symbol { get; private set; }
 
-        public string dest { get; private set; }
+        public string Dest { get; private set; }
 
-        public string comp { get; private set; }
+        public string Comp { get; private set; }
 
-        public string jump { get; private set; }
+        public string Jump { get; private set; }
 
         private void Initialize()
         {
-            lines = File.ReadAllLines(FilePath);
+            _lines = File.ReadAllLines(FilePath);
 
-            if (lines.Length < 1)
+            if (_lines.Length < 1)
             {
                 return;
             }
@@ -53,18 +53,18 @@ namespace HackAssembler
 
         public void Advance()
         {
-            dest = string.Empty;
-            comp = string.Empty;
-            jump = string.Empty;
-            symbol = string.Empty;
+            Dest = string.Empty;
+            Comp = string.Empty;
+            Jump = string.Empty;
+            Symbol = string.Empty;
 
-            currentLine++;
-            var line = lines[currentLine].Trim();
+            _currentLine++;
+            var line = _lines[_currentLine].Trim();
 
             if (line.StartsWith("//") ||
                 line.Length == 0)
             {
-                if (hasMoreCommands)
+                if (HasMoreCommands)
                 {
                     Advance();
                     return;
@@ -83,18 +83,18 @@ namespace HackAssembler
             }
             else
             {
-                commandType = CommandType.C_COMMAND;
+                CommandType = CommandTypeEnum.CCommand;
                 ParseCommand(line);
             }
 
 
-            if (lines.Length > currentLine + 1)
+            if (_lines.Length > _currentLine + 1)
             {
-                hasMoreCommands = true;
+                HasMoreCommands = true;
                 return;
             }
 
-            hasMoreCommands = false;
+            HasMoreCommands = false;
         }
 
         private string CleanLine(string line)
@@ -104,7 +104,7 @@ namespace HackAssembler
 
         private void ParseCommand(string line)
         {
-            var matches = regex.Matches(line);
+            var matches = _regex.Matches(line);
             if (matches.Count != 1)
             {
                 return;
@@ -117,32 +117,32 @@ namespace HackAssembler
 
             if (destGroup.Success)
             {
-                dest = destGroup.Value;
+                Dest = destGroup.Value;
             }
 
             if (compGroup.Success)
             {
-                comp = compGroup.Value;
+                Comp = compGroup.Value;
             }
 
             if (jumpGroup.Success)
             {
-                jump = jumpGroup.Value;
+                Jump = jumpGroup.Value;
             }
         }
 
         private void ParseASymbol(string line)
         {
             var symbolvalue = line.TrimStart('@');
-            commandType = CommandType.A_COMMAND;
-            symbol = symbolvalue;
+            CommandType = CommandTypeEnum.ACommand;
+            Symbol = symbolvalue;
         }
 
         private void ParseLSymbol(string line)
         {
             var symbolvalue = line.Trim('(').Trim(')');
-            commandType = CommandType.L_COMMAND;
-            symbol = symbolvalue;
+            CommandType = CommandTypeEnum.LCommand;
+            Symbol = symbolvalue;
         }
     }
 }

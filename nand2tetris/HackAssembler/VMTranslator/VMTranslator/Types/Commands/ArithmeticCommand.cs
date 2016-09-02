@@ -6,46 +6,46 @@ namespace VMTranslator.Types.Commands
     {
         public enum ArithmeticOperation
         {
-            add,
-            sub,
-            neg,
-            eq,
-            gt,
-            lt,
-            and,
-            or,
-            not
+            Add,
+            Sub,
+            Neg,
+            Eq,
+            Gt,
+            Lt,
+            And,
+            Or,
+            Not
         }
 
         public ArithmeticOperation Operation { get; private set; }
 
         public ArithmeticCommand(string arg1, int arg2) : base(arg1, arg2)
         {
-            Operation = parseArithmeticOperation(arg1);
+            Operation = ParseArithmeticOperation(arg1);
         }
 
-        private ArithmeticOperation parseArithmeticOperation(string s)
+        private ArithmeticOperation ParseArithmeticOperation(string s)
         {
             switch (s.ToLower())
             {
                 case "add":
-                    return ArithmeticOperation.add;
+                    return ArithmeticOperation.Add;
                 case "sub":
-                    return ArithmeticOperation.sub;
+                    return ArithmeticOperation.Sub;
                 case "neg":
-                    return ArithmeticOperation.neg;
+                    return ArithmeticOperation.Neg;
                 case "eq":
-                    return ArithmeticOperation.eq;
+                    return ArithmeticOperation.Eq;
                 case "gt":
-                    return ArithmeticOperation.gt;
+                    return ArithmeticOperation.Gt;
                 case "lt":
-                    return ArithmeticOperation.lt;
+                    return ArithmeticOperation.Lt;
                 case "and":
-                    return ArithmeticOperation.and;
+                    return ArithmeticOperation.And;
                 case "or":
-                    return ArithmeticOperation.or;
+                    return ArithmeticOperation.Or;
                 case "not":
-                    return ArithmeticOperation.not;
+                    return ArithmeticOperation.Not;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(s));
             }

@@ -7,18 +7,18 @@ namespace VMTranslator
 {
     internal class LineParser
     {
-        private static Regex regex = new Regex("(?<type>[add|sub|neg|eq|gt|lt|and|or|not|push|pop]+)\\s?(?<arg1>[\\d|static|this|local|argument|that|constant|pointer|temp]+)?\\s?(?<arg2>[\\d]+)?.*", RegexOptions.Compiled);
+        private static Regex _regex = new Regex("(?<type>[add|sub|neg|eq|gt|lt|and|or|not|push|pop]+)\\s?(?<arg1>[\\d|static|this|local|argument|that|constant|pointer|temp]+)?\\s?(?<arg2>[\\d]+)?.*", RegexOptions.Compiled);
 
-        private static string type = string.Empty;
-        private static string arg1 = string.Empty;
-        private static int arg2;
+        private static string _type = string.Empty;
+        private static string _arg1 = string.Empty;
+        private static int _arg2;
 
 
         public static Command GetCommand(string line)
         {
-            type = string.Empty;
-            arg1 = string.Empty;
-            arg2 = -1;
+            _type = string.Empty;
+            _arg1 = string.Empty;
+            _arg2 = -1;
 
             var match = GetMatch(line);
             LoadElements(match);
@@ -27,7 +27,7 @@ namespace VMTranslator
 
         private static Command CreateCommand()
         {
-            switch (type)
+            switch (_type)
             {
                 case "add":
                 case "sub":
@@ -38,13 +38,13 @@ namespace VMTranslator
                 case "and":
                 case "or":
                 case "not":
-                    return new ArithmeticCommand(arg1, arg2);
+                    return new ArithmeticCommand(_arg1, _arg2);
                 case "push":
                 case "pop":
-                    return new PushPopCommand(arg1, arg2);
+                    return new PushPopCommand(_arg1, _arg2);
             }
 
-            throw new NotSupportedException("Type: " + type + " is not supported.");
+            throw new NotSupportedException("Type: " + _type + " is not supported.");
         }
 
         private static void LoadElements(Match match)
@@ -55,23 +55,23 @@ namespace VMTranslator
 
             if (typeGroup.Success)
             {
-                type = typeGroup.Value;
+                _type = typeGroup.Value;
             }
 
             if (arg1Group.Success)
             {
-                arg1 = arg1Group.Value;
+                _arg1 = arg1Group.Value;
             }
 
             if (arg2Group.Success)
             {
-                arg2 = Convert.ToInt32(arg2Group.Value);
+                _arg2 = Convert.ToInt32(arg2Group.Value);
             }
         }
 
         private static Match GetMatch(string line)
         {
-            var matches = regex.Matches(line);
+            var matches = _regex.Matches(line);
             if (matches.Count != 1)
             {
                 return null;

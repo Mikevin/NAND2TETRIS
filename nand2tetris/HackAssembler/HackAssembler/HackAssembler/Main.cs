@@ -5,12 +5,12 @@ namespace HackAssembler
 {
     public class Main
     {
-        private Parser parser;
+        private Parser _parser;
 
         public Main(string filePath)
         {
             FilePath = filePath;
-            parser = new Parser(FilePath);
+            _parser = new Parser(FilePath);
         }
 
         public string FilePath { get; }
@@ -24,14 +24,14 @@ namespace HackAssembler
         private void FirstPass()
         {
             var counter = 0;
-            while (parser.hasMoreCommands)
+            while (_parser.HasMoreCommands)
             {
-                parser.Advance();
-                if (parser.commandType == Parser.CommandType.L_COMMAND)
+                _parser.Advance();
+                if (_parser.CommandType == Parser.CommandTypeEnum.LCommand)
                 {
-                    if (!SymbolTable.contains(parser.symbol))
+                    if (!SymbolTable.Contains(_parser.Symbol))
                     {
-                        SymbolTable.addEntry(parser.symbol, counter);
+                        SymbolTable.AddEntry(_parser.Symbol, counter);
                     }
                 }
                 else
@@ -43,19 +43,19 @@ namespace HackAssembler
 
         private List<string> SecondPass()
         {
-            parser = new Parser(FilePath);
+            _parser = new Parser(FilePath);
             var output = new List<string>();
 
-            while (parser.hasMoreCommands)
+            while (_parser.HasMoreCommands)
             {
-                parser.Advance();
+                _parser.Advance();
                 string outputBinary = null;
-                switch (parser.commandType)
+                switch (_parser.CommandType)
                 {
-                    case Parser.CommandType.A_COMMAND:
+                    case Parser.CommandTypeEnum.ACommand:
                         outputBinary = TranslateAddress();
                         break;
-                    case Parser.CommandType.C_COMMAND:
+                    case Parser.CommandTypeEnum.CCommand:
                         outputBinary = TranslateCommand();
                         break;
                 }
@@ -72,17 +72,17 @@ namespace HackAssembler
         {
             string outputBinary;
             int value;
-            if (int.TryParse(parser.symbol, out value))
+            if (int.TryParse(_parser.Symbol, out value))
             {
                 outputBinary = 0 + Convert.ToString(value, 2).PadLeft(15, '0');
             }
             else
             {
-                if (!SymbolTable.contains(parser.symbol))
+                if (!SymbolTable.Contains(_parser.Symbol))
                 {
-                    SymbolTable.addEntry(parser.symbol, SymbolTable.NextAddress);
+                    SymbolTable.AddEntry(_parser.Symbol, SymbolTable.NextAddress);
                 }
-                var address = SymbolTable.GetAddress(parser.symbol);
+                var address = SymbolTable.GetAddress(_parser.Symbol);
                 outputBinary = 0 + Convert.ToString(address, 2).PadLeft(15, '0');
             }
             return outputBinary;
@@ -91,9 +91,9 @@ namespace HackAssembler
         private string TranslateCommand()
         {
             var binary = "111";
-            binary += Code.comp(parser.comp);
-            binary += Code.dest(parser.dest);
-            binary += Code.jump(parser.jump);
+            binary += Code.Comp(_parser.Comp);
+            binary += Code.Dest(_parser.Dest);
+            binary += Code.Jump(_parser.Jump);
 
             return binary;
         }

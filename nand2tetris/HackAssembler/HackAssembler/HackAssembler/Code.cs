@@ -2,7 +2,7 @@
 {
     public static class Code
     {
-        public static string dest(string input)
+        public static string Dest(string input)
         {
             switch (input)
             {
@@ -25,7 +25,7 @@
             }
         }
 
-        public static string comp(string input)
+        public static string Comp(string input)
         {
             switch (input)
             {
@@ -91,7 +91,7 @@
             }
         }
 
-        public static string jump(string input)
+        public static string Jump(string input)
         {
             switch (input)
             {
