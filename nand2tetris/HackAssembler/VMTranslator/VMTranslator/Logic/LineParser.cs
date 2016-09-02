@@ -47,28 +47,6 @@ namespace VMTranslator
             throw new NotSupportedException("Type: " + type + " is not supported.");
         }
 
-        private static Command.commandType ParseCommandType(string s)
-        {
-            switch (s)
-            {
-                case "add":
-                case "sub":
-                case "neg":
-                case "eq":
-                case "gt":
-                case "lt":
-                case "and":
-                case "or":
-                case "not":
-                    return Command.commandType.C_ARITHMETIC;
-                case "push":
-                    return Command.commandType.C_PUSH;
-                case "pop":
-                    return Command.commandType.C_POP;
-            }
-            return Command.commandType.INVALID;
-        }
-
         private static void LoadElements(Match match)
         {
             var typeGroup = match.Groups["type"];
