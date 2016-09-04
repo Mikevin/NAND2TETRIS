@@ -48,17 +48,17 @@ namespace VMTranslator
         {
             line = line.Trim();
             var parts = line.Split(' ');
-            if (parts[0] != null)
+            if (parts.Length > 0)
             {
                 SetCommandType(parts[0]);
             }
-            if (parts[1] != null)
+            if (parts.Length > 1)
             {
                 SetArg1(parts[1], parts[0]);
             }
-            if (parts[2] != null)
+            if (parts.Length > 2)
             {
-                SetArg2(parts[3]);
+                SetArg2(parts[2]);
             }
         }
 

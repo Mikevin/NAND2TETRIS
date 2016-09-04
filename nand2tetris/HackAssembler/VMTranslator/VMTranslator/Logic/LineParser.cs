@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using VMTranslator.Types;
-using VMTranslator.Types.Commands;
 
 namespace VMTranslator
 {
@@ -38,10 +36,9 @@ namespace VMTranslator
                 case "and":
                 case "or":
                 case "not":
-                    return new ArithmeticCommand(_arg1, _arg2);
                 case "push":
                 case "pop":
-                    return new PushPopCommand(_arg1, _arg2);
+                    break;
             }
 
             throw new NotSupportedException("Type: " + _type + " is not supported.");

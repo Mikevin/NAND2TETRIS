@@ -1,22 +1,26 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using VMTranslator.Types;
 
 namespace VMTranslator
 {
     class CodeWriter
     {
+        private const string IncrementSp = "@SP\nM=M+1\n";
+        private const string DecrementSp = "@SP\nM=M-1\n";
+        private const string StoreSpValueInD = "@SP\nA=M\nD=M\n";
+        private const string StoreDValueInSp = "@SP\nM=D\n";
+
         private FileStream _fileStream;
+        private StreamWriter _streamWriter;
 
         public CodeWriter(FileStream fileStream)
         {
             this._fileStream = fileStream;
-        }
-
-        public void SetFileName(string fileName)
-        {
-            throw new NotImplementedException();
+            _streamWriter = new StreamWriter(_fileStream, Encoding.ASCII);
         }
 
         public void WriteArithmetic(string command)
@@ -46,91 +50,71 @@ namespace VMTranslator
                 throw new InvalidEnumArgumentException("Command is not of type Push or Pop.");
             }
         }
-
+        /// <summary>
+        /// Pops element from MemorySegment onto the stack
+        /// </summary>
+        /// <param name="segment"></param>
+        /// <param name="index"></param>
         private void WritePop(MemorySegment.SegmentType segment, int index)
         {
-            string address = string.Empty;
-            switch (segment)
-            {
-                case MemorySegment.SegmentType.Static:
-                    address = $"@{16 + index}";
-                    break;
-                case MemorySegment.SegmentType.This:
-                    address = $@"@THIS
-                                  D=M
-                                  @{index}
-                                  D=A+D";
-                    break;
-                case MemorySegment.SegmentType.Local:
-                    address = $@"@LCL
-                                  D=M
-                                  @{index}
-                                  D=A+D";
-                    break;
-                case MemorySegment.SegmentType.Argument:
-                    address = $@"@ARG
-                                  D=M
-                                  @{index}
-                                  D=A+D";
-                    break;
-                case MemorySegment.SegmentType.That:
-                    address = $@"@THAT
-                                  D=M
-                                  @{index}
-                                  D=A+D";
-                    break;
-                case MemorySegment.SegmentType.Constant:
-                    address = $@"@{index}
-                                 D=A";
-                    break;
-                case MemorySegment.SegmentType.Pointer:
-                    break;
-                case MemorySegment.SegmentType.Temp:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(segment), segment, null);
-            }
+            Debug.Assert(index > -1);
+            var stringBuilder = new StringBuilder();
+            //make sure value is stored in register D
+            var RetrieveValueString = RetrieveValue(segment, index);
+            stringBuilder.Append(RetrieveValueString);
+            stringBuilder.Append(StoreDValueInSp);
+            stringBuilder.Append(IncrementSp);
 
-            string asm = address +
-                        @"@SP
-                          A=A-1";
+            _streamWriter.Write(stringBuilder.ToString());
         }
 
-        private void WritePush(MemorySegment.SegmentType segment, int index)
+        /// <summary>
+        /// Retrieves value from the memory location indicated by segment and index and stores it in register D
+        /// </summary>
+        /// <param name="segment"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private string RetrieveValue(MemorySegment.SegmentType segment, int index)
         {
-            string address = string.Empty;
+            string asm = string.Empty;
+
             switch (segment)
             {
                 case MemorySegment.SegmentType.Static:
-                    address = $"@{16 + index}";
+                    asm = $@"@{16 + index}
+                             D=M";
                     break;
                 case MemorySegment.SegmentType.This:
-                    address = $@"@THIS
-                                  D=M
-                                  @{index}
-                                  D=A+D";
+                    asm = $@"@THIS
+                             D=M
+                             @{index}
+                             A=D+A
+                             D=M";
                     break;
                 case MemorySegment.SegmentType.Local:
-                    address = $@"@LCL
-                                  D=M
-                                  @{index}
-                                  D=A+D";
+                    asm = $@"@LCL
+                             D=M
+                             @{index}
+                             A=D+A
+                             D=M";
                     break;
                 case MemorySegment.SegmentType.Argument:
-                    address = $@"@ARG
-                                  D=M
-                                  @{index}
-                                  D=A+D";
+                    asm = $@"@ARG
+                             D=M
+                             @{index}
+                             A=D+A
+                             D=M";
                     break;
                 case MemorySegment.SegmentType.That:
-                    address = $@"@THAT
-                                  D=M
-                                  @{index}
-                                  D=A+D";
+                    asm = $@"@THAT
+                             D=M
+                             @{index}
+                             A=D+A
+                             D=M";
                     break;
                 case MemorySegment.SegmentType.Constant:
-                    address = $@"@{index}
-                                 D=A";
+                    asm = $@"@{index}
+                             D=A";
                     break;
                 case MemorySegment.SegmentType.Pointer:
                     break;
@@ -140,14 +124,83 @@ namespace VMTranslator
                     throw new ArgumentOutOfRangeException(nameof(segment), segment, null);
             }
 
-            string asm = address +
-                        @"@SP
-                          M=D";
+            asm += "\n";
+            return asm;
+        }
+        /// <summary>
+        /// Pushes value from the stack to the selected memorysegment
+        /// </summary>
+        /// <param name="segment"></param>
+        /// <param name="index"></param>
+        private void WritePush(MemorySegment.SegmentType segment, int index)
+        {
+            Debug.Assert(index > -1);
+            int temporaryRegister = 1;
+            var storeAddressinR1String = StoreAddressInRegister(segment, index, temporaryRegister);
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append(storeAddressinR1String);
+            stringBuilder.Append(DecrementSp);
+            stringBuilder.Append(StoreSpValueInD);
+            stringBuilder.Append($"@R{temporaryRegister}\nM=D\n");
+
+            _streamWriter.Write(stringBuilder.ToString().Replace("\t", "").Replace(" ", ""));
+        }
+
+        private string StoreAddressInRegister(MemorySegment.SegmentType segment, int index, int register)
+        {
+            string asm = string.Empty;
+            switch (segment)
+            {
+                case MemorySegment.SegmentType.Static:
+                    asm = $@"@{16 + index}
+                             D=A";
+                    break;
+                case MemorySegment.SegmentType.This:
+                    asm = $@"@THIS
+                             D=M
+                             @{index}
+                             D=D+A";
+                    break;
+                case MemorySegment.SegmentType.Local:
+                    asm = $@"@LOCAL
+                             D=M
+                             @{index}
+                             D=D+A";
+                    break;
+                case MemorySegment.SegmentType.Argument:
+                    asm = $@"@ARG
+                             D=M
+                             @{index}
+                             D=D+A";
+                    break;
+                case MemorySegment.SegmentType.That:
+                    asm = $@"@THAT
+                             D=M
+                             @{index}
+                             D=D+A";
+                    break;
+                case MemorySegment.SegmentType.Constant:
+                    asm = $@"@{index}
+                             D=A
+                             @R2
+                             M=D
+                             D=A";
+                    break;
+                case MemorySegment.SegmentType.Pointer:
+                    break;
+                case MemorySegment.SegmentType.Temp:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(segment), segment, null);
+            }
+            asm += $"\n@R{register}\nM=D\n";
+            return asm;
         }
 
         public void Close()
         {
-
+            _streamWriter.Close();
+            _fileStream.Close();
         }
     }
 }
