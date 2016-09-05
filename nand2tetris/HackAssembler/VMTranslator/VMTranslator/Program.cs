@@ -5,19 +5,19 @@ namespace VMTranslator
 {
     class Program
     {
-        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\StackArithmetic\SimpleAdd\SimpleAdd.vm";
+        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\OpTest.vm";
 
         public static string FileName => Path.GetFileName(InputFile);
 
         static void Main(string[] args)
         {
             var inputFileStream = new FileStream(InputFile, FileMode.Open);
-            string outputFileName = FileName.Replace(".vm", ".asm");
-            if (File.Exists(outputFileName))
+            string outputFilePath = InputFile.Replace(".vm", ".asm");
+            if (File.Exists(outputFilePath))
             {
-                File.Delete(outputFileName);
+                File.Delete(outputFilePath);
             }
-            var outputFileStream = new FileStream(outputFileName, FileMode.CreateNew);
+            var outputFileStream = new FileStream(outputFilePath, FileMode.CreateNew);
             var parser = new Parser(inputFileStream);
             var codeWriter = new CodeWriter(outputFileStream);
             while (parser.HasMoreCommands)
@@ -32,6 +32,9 @@ namespace VMTranslator
                     case CommandType.CPop:
                         codeWriter.WritePushPop(CommandType.CPop, parser.Arg1, parser.Arg2);
                         break;
+                    case CommandType.CArithmetic:
+                        codeWriter.WriteArithmetic(parser.Arg1);
+                        break;
                     default:
                         break;
                 }
@@ -40,7 +43,7 @@ namespace VMTranslator
             codeWriter.Close();
 
             Console.WriteLine("Done.");
-            Console.Read();
+            //Console.Read();
         }
     }
 }

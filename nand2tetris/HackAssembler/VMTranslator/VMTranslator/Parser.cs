@@ -10,7 +10,7 @@ namespace VMTranslator
 
         private static Regex _regex = new Regex("(?<type>[add|sub|neg|eq|gt|lt|and|or|not|push|pop]+)\\s?(?<arg1>[\\d|static|this|local|argument|that|constant|pointer|temp]+)?\\s?(?<arg2>[\\d]+)?.*", RegexOptions.Compiled);
 
-        private static readonly List<string> _arithmeticBooleanCommands = new List<string>
+        private static readonly List<string> ArithmeticBooleanCommands = new List<string>
         {
             "add",
             "sub",
@@ -28,13 +28,15 @@ namespace VMTranslator
             _streamReader = new StreamReader(_fileStream);
         }
 
-        private FileStream _fileStream;
-        private StreamReader _streamReader;
+        private readonly FileStream _fileStream;
+        private readonly StreamReader _streamReader;
 
         public bool HasMoreCommands => !_streamReader.EndOfStream;
 
         public void Advance()
         {
+            ResetValues();
+
             if (!HasMoreCommands)
             {
                 return;
@@ -44,6 +46,13 @@ namespace VMTranslator
             ParseLine(line);
         }
 
+        private void ResetValues()
+        {
+            CurrentCommandType = CommandType.Invalid;
+            Arg1 = string.Empty;
+            Arg2 = 0;
+        }
+
         private void ParseLine(string line)
         {
             line = line.Trim();
@@ -51,10 +60,16 @@ namespace VMTranslator
             if (parts.Length > 0)
             {
                 SetCommandType(parts[0]);
+                //set Arg1 to command string in case of Arithmetic command; as per specification
+                //Needs to happen here because normally Arg1 is only handled when the line has multiple parts
+                if (CurrentCommandType == CommandType.CArithmetic)
+                {
+                    Arg1 = parts[0];
+                }
             }
             if (parts.Length > 1)
             {
-                SetArg1(parts[1], parts[0]);
+                Arg1 = parts[1];
             }
             if (parts.Length > 2)
             {
@@ -78,20 +93,9 @@ namespace VMTranslator
             }
         }
 
-        private void SetArg1(string arg, string command)
-        {
-            if (CurrentCommandType == CommandType.CArithmetic)
-            {
-                Arg1 = command;
-                return;
-            }
-
-            Arg1 = arg;
-        }
-
         private void SetCommandType(string command)
         {
-            if (_arithmeticBooleanCommands.Contains(command))
+            if (ArithmeticBooleanCommands.Contains(command))
             {
                 CurrentCommandType = CommandType.CArithmetic;
                 return;

@@ -1,0 +1,7 @@
+push constant 17
+push constant 17
+eq
+push constant 17
+push constant 16
+eq
+or

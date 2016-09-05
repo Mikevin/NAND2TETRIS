@@ -43,8 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArithmeticTranslator.cs" />
     <Compile Include="CodeWriter.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="PushPopTranslator.cs" />
     <Compile Include="Types\Commands\Command.cs" />
     <Compile Include="Logic\LineParser.cs" />
     <Compile Include="Program.cs" />
