@@ -21,16 +21,106 @@ namespace VMTranslator
         {
             this._fileStream = fileStream;
             _streamWriter = new StreamWriter(_fileStream, Encoding.ASCII);
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            _streamWriter.Write("@256\nD = A\n@SP\nM = D\n");
         }
 
         public void WriteArithmetic(string command)
         {
-            var translated = TransLateArithmetic(command);
+            var ArithmeticType = ParseArithmeticType(command);
+            var Translated = TranslateArithmeticToAsm(ArithmeticType);
         }
 
-        private string TransLateArithmetic(string command)
+        private string TranslateArithmeticToAsm(ArithmeticTypeEnum arithmeticType)
         {
-            throw new NotImplementedException();
+            string asm = string.Empty;
+
+            switch (arithmeticType)
+            {
+                case ArithmeticTypeEnum.Add:
+                    asm += DecrementSp;
+                    asm += StoreSpValueInD;
+                    asm += DecrementSp;
+                    asm += "@SP\nA=M\nD=D+M\n";
+                    break;
+                case ArithmeticTypeEnum.Sub:
+                    asm += DecrementSp;
+                    asm += StoreSpValueInD;
+                    asm += DecrementSp;
+                    asm += "@SP\nA=M\nD=M-D\n";
+                    break;
+                case ArithmeticTypeEnum.Neg:
+                    asm += DecrementSp;
+                    asm += StoreSpValueInD;
+                    asm += "D=-D\n";
+                    break;
+                case ArithmeticTypeEnum.Eq:
+                    asm += DecrementSp;
+                    asm += StoreSpValueInD;
+                    asm += DecrementSp;
+                    asm += "@SP\nA=M\nD=D+M\n";
+                    break;
+                case ArithmeticTypeEnum.Gt:
+                    break;
+                case ArithmeticTypeEnum.Lt:
+                    break;
+                case ArithmeticTypeEnum.And:
+                    break;
+                case ArithmeticTypeEnum.Or:
+                    break;
+                case ArithmeticTypeEnum.Not:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(arithmeticType), arithmeticType, null);
+            }
+            asm += StoreDValueInSp;
+            asm += IncrementSp;
+            return asm;
+        }
+
+        enum ArithmeticTypeEnum
+        {
+            Add,
+            Sub,
+            Neg,
+            Eq,
+            Gt,
+            Lt,
+            And,
+            Or,
+            Not
+        }
+
+        private ArithmeticTypeEnum ParseArithmeticType(string command)
+        {
+            switch (command)
+            {
+                case "add":
+                    return ArithmeticTypeEnum.Add;
+                case "sub":
+                    return ArithmeticTypeEnum.Sub;
+                case "neg":
+                    return ArithmeticTypeEnum.Neg;
+                case "eq":
+                    return ArithmeticTypeEnum.Eq;
+                case "gt":
+                    return ArithmeticTypeEnum.Gt;
+                case "lt":
+                    return ArithmeticTypeEnum.Lt;
+                case "and":
+                    return ArithmeticTypeEnum.And;
+                case "or":
+                    return ArithmeticTypeEnum.Or;
+                case "not":
+                    return ArithmeticTypeEnum.Not;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void WritePushPop(CommandType command, string memorySegment, int index)
