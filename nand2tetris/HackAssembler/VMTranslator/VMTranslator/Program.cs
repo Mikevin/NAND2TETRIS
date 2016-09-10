@@ -3,11 +3,9 @@ using System.IO;
 
 namespace VMTranslator
 {
-    class Program
+    static class Program
     {
-        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\MemoryAccess\PointerTest\PointerTest.vm";
-
-        public static string FileName => Path.GetFileName(InputFile);
+        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\MemoryAccess\StaticTest\StaticTest.vm";
 
         static void Main(string[] args)
         {
@@ -27,16 +25,14 @@ namespace VMTranslator
 
                 switch (parser.CurrentCommandType)
                 {
-                    case CommandType.CPush:
-                        codeWriter.WritePushPop(CommandType.CPush, parser.Arg1, parser.Arg2);
+                    case CommandType.Push:
+                        codeWriter.WritePushPop(CommandType.Push, parser.Arg1, parser.Arg2);
                         break;
-                    case CommandType.CPop:
-                        codeWriter.WritePushPop(CommandType.CPop, parser.Arg1, parser.Arg2);
+                    case CommandType.Pop:
+                        codeWriter.WritePushPop(CommandType.Pop, parser.Arg1, parser.Arg2);
                         break;
-                    case CommandType.CArithmetic:
+                    case CommandType.Arithmetic:
                         codeWriter.WriteArithmetic(parser.Arg1);
-                        break;
-                    default:
                         break;
                 }
             }

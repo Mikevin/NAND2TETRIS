@@ -13,7 +13,7 @@ namespace VMTranslator
             FileName = fileName;
         }
 
-        public string FileName { get; private set; }
+        private string FileName { get; }
 
         public string Translate(CommandType command, string memorySegment, int index)
         {
@@ -22,10 +22,10 @@ namespace VMTranslator
 
             switch (command)
             {
-                case CommandType.CPush:
+                case CommandType.Push:
                     asm += Push(segment, index);
                     break;
-                case CommandType.CPop:
+                case CommandType.Pop:
                     asm += Pop(segment, index);
                     break;
                 default:
@@ -104,12 +104,12 @@ namespace VMTranslator
                 case MemorySegment.SegmentType.Pointer:
                     if (index == 0)
                     {
-                        asm = $@"@THIS
+                        asm = @"@THIS
                                  D=M";
                     }
                     else if (index == 1)
                     {
-                        asm = $@"@THAT
+                        asm = @"@THAT
                                  D=M";
                     }
                     else
@@ -198,12 +198,12 @@ namespace VMTranslator
                 case MemorySegment.SegmentType.Pointer:
                     if (index == 0)
                     {
-                        asm = $@"@THIS
+                        asm = @"@THIS
                              D=A";
                     }
                     else if (index == 1)
                     {
-                        asm = $@"@THAT
+                        asm = @"@THAT
                              D=A";
                     }
                     else

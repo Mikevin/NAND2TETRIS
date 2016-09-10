@@ -27,7 +27,7 @@ namespace HackAssembler
 
         public bool HasMoreCommands { get; private set; }
 
-        public string FilePath { get; }
+        private string FilePath { get; }
 
         public CommandTypeEnum CommandType { get; private set; }
 

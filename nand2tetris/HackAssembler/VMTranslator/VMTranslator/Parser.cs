@@ -24,11 +24,9 @@ namespace VMTranslator
         };
         public Parser(FileStream fileStream)
         {
-            _fileStream = fileStream;
-            _streamReader = new StreamReader(_fileStream);
+            _streamReader = new StreamReader(fileStream);
         }
 
-        private readonly FileStream _fileStream;
         private readonly StreamReader _streamReader;
 
         public bool HasMoreCommands => !_streamReader.EndOfStream;
@@ -62,7 +60,7 @@ namespace VMTranslator
                 SetCommandType(parts[0]);
                 //set Arg1 to command string in case of Arithmetic command; as per specification
                 //Needs to happen here because normally Arg1 is only handled when the line has multiple parts
-                if (CurrentCommandType == CommandType.CArithmetic)
+                if (CurrentCommandType == CommandType.Arithmetic)
                 {
                     Arg1 = parts[0];
                 }
@@ -82,10 +80,10 @@ namespace VMTranslator
             short arg2 = Int16.Parse(arg);
             switch (CurrentCommandType)
             {
-                case CommandType.CPush:
-                case CommandType.CPop:
-                case CommandType.CFunction:
-                case CommandType.CCall:
+                case CommandType.Push:
+                case CommandType.Pop:
+                case CommandType.Function:
+                case CommandType.Call:
                     Arg2 = arg2;
                     break;
                 default:
@@ -97,17 +95,17 @@ namespace VMTranslator
         {
             if (ArithmeticBooleanCommands.Contains(command))
             {
-                CurrentCommandType = CommandType.CArithmetic;
+                CurrentCommandType = CommandType.Arithmetic;
                 return;
             }
 
             switch (command)
             {
                 case "push":
-                    CurrentCommandType = CommandType.CPush;
+                    CurrentCommandType = CommandType.Push;
                     break;
                 case "pop":
-                    CurrentCommandType = CommandType.CPop;
+                    CurrentCommandType = CommandType.Pop;
                     break;
                 default:
                     throw new InvalidDataException($"Unknown command: {command}.");

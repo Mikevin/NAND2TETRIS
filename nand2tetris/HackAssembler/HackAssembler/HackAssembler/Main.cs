@@ -13,7 +13,7 @@ namespace HackAssembler
             _parser = new Parser(FilePath);
         }
 
-        public string FilePath { get; }
+        private string FilePath { get; }
 
         public List<string> Translate()
         {
