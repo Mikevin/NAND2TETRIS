@@ -5,7 +5,7 @@ namespace VMTranslator
 {
     class Program
     {
-        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\StackArithmetic\StackTest\StackTest.vm";
+        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\MemoryAccess\BasicTest\owntest.vm";
 
         public static string FileName => Path.GetFileName(InputFile);
 
@@ -18,6 +18,7 @@ namespace VMTranslator
                 File.Delete(outputFilePath);
             }
             var outputFileStream = new FileStream(outputFilePath, FileMode.CreateNew);
+
             var parser = new Parser(inputFileStream);
             var codeWriter = new CodeWriter(outputFileStream);
             while (parser.HasMoreCommands)

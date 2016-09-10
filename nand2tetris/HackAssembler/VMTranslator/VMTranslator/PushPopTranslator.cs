@@ -6,10 +6,16 @@ using VMTranslator.Types;
 
 namespace VMTranslator
 {
-    static class PushPopTranslator
+    public class PushPopTranslator
     {
+        public PushPopTranslator(string fileName)
+        {
+            FileName = fileName;
+        }
 
-        public static string TransLatePushPop(CommandType command, string memorySegment, int index)
+        public string FileName { get; private set; }
+
+        public string Translate(CommandType command, string memorySegment, int index)
         {
             var asm = string.Empty;
             var segment = MemorySegment.ParseSegment(memorySegment);
@@ -17,24 +23,25 @@ namespace VMTranslator
             switch (command)
             {
                 case CommandType.CPush:
-                    asm += WritePush(segment, index);
+                    asm += Push(segment, index);
                     break;
                 case CommandType.CPop:
-                    asm += WritePop(segment, index);
+                    asm += Pop(segment, index);
                     break;
                 default:
                     throw new InvalidEnumArgumentException("Command is not of type Push or Pop.");
             }
-
+            asm = asm.Replace("\t", "").Replace(" ", "");
             return asm;
         }
 
         /// <summary>
-        /// Pops element from the stack onto the selected MemorySegment
+        /// Push onto the stack
         /// </summary>
         /// <param name="segment"></param>
         /// <param name="index"></param>
-        private static string WritePop(MemorySegment.SegmentType segment, int index)
+        /// <returns></returns>
+        private string Push(MemorySegment.SegmentType segment, int index)
         {
             var stringBuilder = new StringBuilder();
             //make sure value is stored in register D
@@ -54,14 +61,14 @@ namespace VMTranslator
         /// <param name="segment"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        private static string RetrieveValue(MemorySegment.SegmentType segment, int index)
+        private string RetrieveValue(MemorySegment.SegmentType segment, int index)
         {
             string asm = string.Empty;
 
             switch (segment)
             {
                 case MemorySegment.SegmentType.Static:
-                    asm = $@"@{16 + index}
+                    asm = $@"@{FileName + '.' + index}
                              D=M";
                     break;
                 case MemorySegment.SegmentType.This:
@@ -99,6 +106,11 @@ namespace VMTranslator
                 case MemorySegment.SegmentType.Pointer:
                     break;
                 case MemorySegment.SegmentType.Temp:
+                    asm = $@"@TMP
+                             D=M
+                             @{index}
+                             A=D+A
+                             D=M";//TODO M=D?
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(segment), segment, null);
@@ -109,21 +121,16 @@ namespace VMTranslator
         }
 
         /// <summary>
-        /// Pushes value from the selected memorysegment to the stack
+        /// Pop from the stack onto the segment base + index
         /// </summary>
         /// <param name="segment"></param>
         /// <param name="index"></param>
-        private static string WritePush(MemorySegment.SegmentType segment, int index)
+        /// <returns></returns>
+        private string Pop(MemorySegment.SegmentType segment, int index)
         {
             Debug.Assert(index > -1);
 
-            //check constant because it works in a very different way
-            if (segment == MemorySegment.SegmentType.Constant)
-            {
-                return $"@{index}\nD=A\n" + CodeWriter.StoreDValueInSp + CodeWriter.IncrementSp;
-            }
-
-            int temporaryRegister = 1;
+            int temporaryRegister = 13;
             var storeAddressinR1String = StoreAddressInRegister(segment, index, temporaryRegister);
             var stringBuilder = new StringBuilder();
             stringBuilder.Append($"// {segment} {index}\n");
@@ -136,13 +143,13 @@ namespace VMTranslator
             return stringBuilder.ToString().Replace("\t", "").Replace(" ", "");
         }
 
-        private static string StoreAddressInRegister(MemorySegment.SegmentType segment, int index, int register)
+        private string StoreAddressInRegister(MemorySegment.SegmentType segment, int index, int register)
         {
             string asm = string.Empty;
             switch (segment)
             {
                 case MemorySegment.SegmentType.Static:
-                    asm = $@"@{16 + index}
+                    asm = $@"@{FileName + '.' + index}
                              D=A";
                     break;
                 case MemorySegment.SegmentType.This:
@@ -179,6 +186,10 @@ namespace VMTranslator
                 case MemorySegment.SegmentType.Pointer:
                     break;
                 case MemorySegment.SegmentType.Temp:
+                    asm = $@"@TMP
+                             D=M
+                             @{index}
+                             D=D+A";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(segment), segment, null);

@@ -4,6 +4,25 @@ namespace VMTranslator.Types
 {
     public static class MemorySegment
     {
+        public static int StartingAddress(SegmentType segment)
+        {
+            switch (segment)
+            {
+                case SegmentType.This:
+                    return 3000;
+                case SegmentType.Local:
+                    return 300;
+                case SegmentType.Argument:
+                    return 400;
+                case SegmentType.That:
+                    return 3010;
+                case SegmentType.Temp:
+                    return 5;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(segment), segment, null);
+            }
+        }
+
         public enum SegmentType
         {
             Static,

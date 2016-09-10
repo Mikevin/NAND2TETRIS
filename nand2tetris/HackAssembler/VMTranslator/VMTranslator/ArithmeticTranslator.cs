@@ -9,7 +9,7 @@ namespace VMTranslator
         public static string TranslateArithmeticCommand(string command)
         {
             var type = ParseArithmeticType(command);
-            return TranslateArithmeticToAsm(type);
+            return TranslateArithmeticToAsm(type).Replace("\t", "").Replace(" ", "");
         }
 
         /// <summary>
