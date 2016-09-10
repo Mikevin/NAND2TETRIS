@@ -23,7 +23,7 @@ namespace VMTranslator
 
         private void Initialize()
         {
-            _streamWriter.Write("//initialization\n@257\nD=A\n@SP\nM=D\n//initialization end\n");
+            _streamWriter.Write("//initialization\n@256\nD=A\n@SP\nM=D\n//initialization end\n");
         }
 
         public void WriteArithmetic(string command)

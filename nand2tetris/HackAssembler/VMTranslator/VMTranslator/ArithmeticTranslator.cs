@@ -55,11 +55,11 @@ namespace VMTranslator
                     asm += "@SP\nA=M\nD=D-M\n";
                     asm += $@"@EQUAL{_labelCount}
                                 D;JEQ
-                                D=-1
+                                D=0
                                 @END_EQUAL{_labelCount}
                                 0;JMP
                                 (EQUAL{_labelCount})
-                                D=0
+                                D=-1
                                 @END_EQUAL{_labelCount}
                                 0;JMP
                                 (END_EQUAL{_labelCount})";
@@ -75,11 +75,11 @@ namespace VMTranslator
                     asm += "@SP\nA=M\nD=D-M\n";
                     asm += $@"@TRUE{_labelCount}
                                 D;JLT
-                                D=-1
+                                D=0
                                 @END_COMPARISON{_labelCount}
                                 0;JMP
                                 (TRUE{_labelCount})
-                                D=0
+                                D=-1
                                 @END_COMPARISON{_labelCount}
                                 0;JMP
                                 (END_COMPARISON{_labelCount})";
@@ -95,11 +95,11 @@ namespace VMTranslator
                     asm += "@SP\nA=M\nD=D-M\n";
                     asm += $@"@TRUE{_labelCount}
                                 D;JGT
-                                D=-1
+                                D=0
                                 @END_COMPARISON{_labelCount}
                                 0;JMP
                                 (TRUE{_labelCount})
-                                D=0
+                                D=-1
                                 @END_COMPARISON{_labelCount}
                                 0;JMP
                                 (END_COMPARISON{_labelCount})";
@@ -112,68 +112,24 @@ namespace VMTranslator
                     asm += CodeWriter.DecrementSp;
                     asm += CodeWriter.StoreSpValueInD;
                     asm += CodeWriter.DecrementSp;
-                    asm += $@"@BOOL1_FALSE{_labelCount}
-                              D;JNE
-                              {CodeWriter.DecrementSp}
-                              {CodeWriter.StoreSpValueInD}
-                              @END{_labelCount}
-                              D;JNE
-                              (BOOL1_FALSE{_labelCount})
-                              {CodeWriter.DecrementSp}
-                              D=-1
-                              (END{_labelCount})
-                              {CodeWriter.StoreDValueInSp}
-                              {CodeWriter.IncrementSp}";
-                    asm += "\n";
-                    _labelCount++;
+                    asm += "A=M\nD=D&M\n";
+                    asm += CodeWriter.StoreDValueInSp;
+                    asm += CodeWriter.IncrementSp;
                     break;
                 case ArithmeticTypeEnum.Or:
                     asm += CodeWriter.DecrementSp;
                     asm += CodeWriter.StoreSpValueInD;
                     asm += CodeWriter.DecrementSp;
-                    asm += $@"
-                            D=D-1
-                            @1TRUE{_labelCount}
-                            D;JNE
-                            {CodeWriter.StoreSpValueInD}
-                            D=D-1
-                            @2TRUE{_labelCount}
-                            D;JNE
-                            D=-1
-                            {CodeWriter.StoreDValueInSp}
-                            @END{_labelCount}
-                            0;JMP
-                            (1TRUE{_labelCount})
-                            D=0
-                            {CodeWriter.StoreDValueInSp}
-                            @END{_labelCount}
-                            0;JMP
-                            (2TRUE{_labelCount})
-                            D=-1
-                            {CodeWriter.StoreDValueInSp}
-                            (END{_labelCount})";
-                    asm += "\n";
+                    asm += "A=M\nD=D|M\n";
+                    asm += CodeWriter.StoreDValueInSp;
                     asm += CodeWriter.IncrementSp;
-                    _labelCount++;
                     break;
                 case ArithmeticTypeEnum.Not:
                     asm += CodeWriter.DecrementSp;
                     asm += CodeWriter.StoreSpValueInD;
-                    asm += $@"
-                            @TRUE{_labelCount}
-                            D;JEQ
-                            D=0
-                            {CodeWriter.StoreDValueInSp}
-                            {CodeWriter.IncrementSp}
-                            @END{_labelCount}
-                            0;JMP
-                            (TRUE{_labelCount})
-                            D=-1
-                            {CodeWriter.StoreDValueInSp}
-                            {CodeWriter.IncrementSp}
-                            (END{_labelCount})";
-                    asm += "\n";
-                    _labelCount++;
+                    asm += "D=!D\n";
+                    asm += CodeWriter.StoreDValueInSp;
+                    asm += CodeWriter.IncrementSp;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(arithmeticType), arithmeticType, null);

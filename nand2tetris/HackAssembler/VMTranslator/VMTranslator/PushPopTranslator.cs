@@ -127,7 +127,6 @@ namespace VMTranslator
             var storeAddressinR1String = StoreAddressInRegister(segment, index, temporaryRegister);
             var stringBuilder = new StringBuilder();
             stringBuilder.Append($"// {segment} {index}\n");
-
             stringBuilder.Append(storeAddressinR1String);
             stringBuilder.Append(CodeWriter.DecrementSp);
             stringBuilder.Append(CodeWriter.StoreSpValueInD);
