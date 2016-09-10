@@ -45,12 +45,10 @@ namespace VMTranslator
         {
             var stringBuilder = new StringBuilder();
             //make sure value is stored in register D
-            var retrieveValueString = RetrieveValue(segment, index);
-            stringBuilder.Append($"// {segment} {index}\n");
+            var retrieveValueString = LoadValueIntoD(segment, index);
             stringBuilder.Append(retrieveValueString);
             stringBuilder.Append(CodeWriter.StoreDValueInSp);
             stringBuilder.Append(CodeWriter.IncrementSp);
-            stringBuilder.Append($"//end {segment} {index}\n");
 
             return stringBuilder.ToString();
         }
@@ -61,7 +59,7 @@ namespace VMTranslator
         /// <param name="segment"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        private string RetrieveValue(MemorySegment.SegmentType segment, int index)
+        private string LoadValueIntoD(MemorySegment.SegmentType segment, int index)
         {
             string asm = string.Empty;
 
@@ -137,7 +135,7 @@ namespace VMTranslator
             stringBuilder.Append(storeAddressinR1String);
             stringBuilder.Append(CodeWriter.DecrementSp);
             stringBuilder.Append(CodeWriter.StoreSpValueInD);
-            stringBuilder.Append($"@R{temporaryRegister}\nM=D\n");
+            stringBuilder.Append($"@R{temporaryRegister}\nA=M\nM=D\n");
             stringBuilder.Append($"//end {segment} {index}\n");
 
             return stringBuilder.ToString().Replace("\t", "").Replace(" ", "");
@@ -159,7 +157,7 @@ namespace VMTranslator
                              D=D+A";
                     break;
                 case MemorySegment.SegmentType.Local:
-                    asm = $@"@LOCAL
+                    asm = $@"@LCL
                              D=M
                              @{index}
                              D=D+A";

@@ -5,7 +5,7 @@ namespace VMTranslator
 {
     class Program
     {
-        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\MemoryAccess\BasicTest\owntest.vm";
+        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\07\MemoryAccess\BasicTest\BasicTest.vm";
 
         public static string FileName => Path.GetFileName(InputFile);
 

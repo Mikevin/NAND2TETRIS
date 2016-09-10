@@ -34,18 +34,22 @@ M=D
 M=M+1
 //end CPush constant 10
 //start CPop local 0
-// Local 0
+//Local0
 @LCL
-                             D=M
-                             @0
-                             A=D+A
-                             D=M
-@SP
-A=M
+D=M
+@0
+D=D+A
+@R13
 M=D
 @SP
-M=M+1
-//end Local 0
+M=M-1
+@SP
+A=M
+D=M
+@R13
+A=M
+M=D
+//endLocal0
 //end CPop local 0
 //start CPush constant 21
 @21
@@ -66,32 +70,40 @@ M=D
 M=M+1
 //end CPush constant 22
 //start CPop argument 2
-// Argument 2
+//Argument2
 @ARG
-                             D=M
-                             @2
-                             A=D+A
-                             D=M
-@SP
-A=M
+D=M
+@2
+D=D+A
+@R13
 M=D
 @SP
-M=M+1
-//end Argument 2
+M=M-1
+@SP
+A=M
+D=M
+@R13
+A=M
+M=D
+//endArgument2
 //end CPop argument 2
 //start CPop argument 1
-// Argument 1
+//Argument1
 @ARG
-                             D=M
-                             @1
-                             A=D+A
-                             D=M
-@SP
-A=M
+D=M
+@1
+D=D+A
+@R13
 M=D
 @SP
-M=M+1
-//end Argument 1
+M=M-1
+@SP
+A=M
+D=M
+@R13
+A=M
+M=D
+//endArgument1
 //end CPop argument 1
 //start CPush constant 36
 @36
@@ -103,18 +115,22 @@ M=D
 M=M+1
 //end CPush constant 36
 //start CPop this 6
-// This 6
+//This6
 @THIS
-                             D=M
-                             @6
-                             A=D+A
-                             D=M
-@SP
-A=M
+D=M
+@6
+D=D+A
+@R13
 M=D
 @SP
-M=M+1
-//end This 6
+M=M-1
+@SP
+A=M
+D=M
+@R13
+A=M
+M=D
+//endThis6
 //end CPop this 6
 //start CPush constant 42
 @42
@@ -135,74 +151,6 @@ M=D
 M=M+1
 //end CPush constant 45
 //start CPop that 5
-// That 5
-@THAT
-                             D=M
-                             @5
-                             A=D+A
-                             D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//end That 5
-//end CPop that 5
-//start CPop that 2
-// That 2
-@THAT
-                             D=M
-                             @2
-                             A=D+A
-                             D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//end That 2
-//end CPop that 2
-//start CPush constant 510
-@510
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//end CPush constant 510
-//start CPop temp 6
-// Temp 6
-@TMP
-                             D=M
-                             @6
-                             A=D+A
-                             D=M
-@SP
-A=M
-M=D
-@SP
-M=M+1
-//end Temp 6
-//end CPop temp 6
-//start CPush local 0
-//Local0
-@LOCAL
-D=M
-@0
-D=D+A
-@R13
-M=D
-@SP
-M=M-1
-@SP
-A=M
-D=M
-@R13
-M=D
-//endLocal0
-//end CPush local 0
-//start CPush that 5
 //That5
 @THAT
 D=M
@@ -216,8 +164,78 @@ M=M-1
 A=M
 D=M
 @R13
+A=M
 M=D
 //endThat5
+//end CPop that 5
+//start CPop that 2
+//That2
+@THAT
+D=M
+@2
+D=D+A
+@R13
+M=D
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@R13
+A=M
+M=D
+//endThat2
+//end CPop that 2
+//start CPush constant 510
+@510
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end CPush constant 510
+//start CPop temp 6
+//Temp6
+@TMP
+D=M
+@6
+D=D+A
+@R13
+M=D
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@R13
+A=M
+M=D
+//endTemp6
+//end CPop temp 6
+//start CPush local 0
+@LCL
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end CPush local 0
+//start CPush that 5
+@THAT
+D=M
+@5
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
 //end CPush that 5
 //add
 @SP
@@ -237,21 +255,16 @@ M=D
 M=M+1
 //add end
 //start CPush argument 1
-//Argument1
 @ARG
 D=M
 @1
-D=D+A
-@R13
-M=D
-@SP
-M=M-1
+A=D+A
+D=M
 @SP
 A=M
-D=M
-@R13
 M=D
-//endArgument1
+@SP
+M=M+1
 //end CPush argument 1
 //sub
 @SP
@@ -271,38 +284,28 @@ M=D
 M=M+1
 //sub end
 //start CPush this 6
-//This6
 @THIS
 D=M
 @6
-D=D+A
-@R13
-M=D
-@SP
-M=M-1
+A=D+A
+D=M
 @SP
 A=M
-D=M
-@R13
 M=D
-//endThis6
+@SP
+M=M+1
 //end CPush this 6
 //start CPush this 6
-//This6
 @THIS
 D=M
 @6
-D=D+A
-@R13
-M=D
-@SP
-M=M-1
+A=D+A
+D=M
 @SP
 A=M
-D=M
-@R13
 M=D
-//endThis6
+@SP
+M=M+1
 //end CPush this 6
 //add
 @SP
@@ -339,21 +342,16 @@ M=D
 M=M+1
 //sub end
 //start CPush temp 6
-//Temp6
 @TMP
 D=M
 @6
-D=D+A
-@R13
-M=D
-@SP
-M=M-1
+A=D+A
+D=M
 @SP
 A=M
-D=M
-@R13
 M=D
-//endTemp6
+@SP
+M=M+1
 //end CPush temp 6
 //add
 @SP

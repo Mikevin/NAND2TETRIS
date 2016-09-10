@@ -25,7 +25,6 @@ D=A
 M=D
 //initialization end
 //start CPush constant 10
-//Constant10
 @10
 D=A
 @SP
@@ -33,11 +32,10 @@ A=M
 M=D
 @SP
 M=M+1
-//endConstant10
 //end CPush constant 10
 //start CPop local 0
 //Local0
-@LOCAL
+@LCL
 D=M
 @0
 D=D+A
@@ -49,6 +47,7 @@ M=M-1
 A=M
 D=M
 @R13
+A=M
 M=D
 //endLocal0
 //end CPop local 0
