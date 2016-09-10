@@ -102,13 +102,27 @@ namespace VMTranslator
                              D=A";
                     break;
                 case MemorySegment.SegmentType.Pointer:
+                    if (index == 0)
+                    {
+                        asm = $@"@THIS
+                                 D=M";
+                    }
+                    else if (index == 1)
+                    {
+                        asm = $@"@THAT
+                                 D=M";
+                    }
+                    else
+                    {
+                        throw new Exception("Pointer must have index 0 or 1.");
+                    }
                     break;
                 case MemorySegment.SegmentType.Temp:
                     asm = $@"@TMP
                              D=M
                              @{index}
                              A=D+A
-                             D=M";//TODO M=D?
+                             D=M";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(segment), segment, null);
@@ -182,6 +196,20 @@ namespace VMTranslator
                              D=A";
                     break;
                 case MemorySegment.SegmentType.Pointer:
+                    if (index == 0)
+                    {
+                        asm = $@"@THIS
+                             D=A";
+                    }
+                    else if (index == 1)
+                    {
+                        asm = $@"@THAT
+                             D=A";
+                    }
+                    else
+                    {
+                        throw new Exception("Pointer must have index 0 or 1.");
+                    }
                     break;
                 case MemorySegment.SegmentType.Temp:
                     asm = $@"@TMP
