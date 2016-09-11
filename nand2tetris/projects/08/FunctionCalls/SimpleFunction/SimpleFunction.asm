@@ -1,0 +1,196 @@
+//start Push constant 0
+@0
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end Push constant 0
+//start Push constant 0
+@0
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end Push constant 0
+(SimpleFunction.test$f)
+//start Push local 0
+@LCL
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end Push local 0
+//start Push local 1
+@LCL
+D=M
+@1
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end Push local 1
+//add
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@SP
+M=M-1
+@SP
+A=M
+D=D+M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//add end
+//not
+@SP
+M=M-1
+@SP
+A=M
+D=M
+D=!D
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//not end
+//start Push argument 0
+@ARG
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end Push argument 0
+//add
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@SP
+M=M-1
+@SP
+A=M
+D=D+M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//add end
+//start Push argument 1
+@ARG
+D=M
+@1
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end Push argument 1
+//sub
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@SP
+M=M-1
+@SP
+A=M
+D=M-D
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//sub end
+@LCL
+D=M
+@R14
+M=D
+@R14
+D=M
+@5
+A=D-A
+D=M
+@R15
+M=D
+//start Pop argument 0
+//Argument0
+@ARG
+D=M
+@0
+D=D+A
+@R13
+M=D
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@R13
+A=M
+M=D
+//endArgument0
+//end Pop argument 0
+@ARG
+D=M
+D=D+1
+@SP
+M=D
+@R14
+D=M
+@1
+A=D-A
+D=M
+@THAT
+M=D
+@R14
+D=M
+@2
+A=D-A
+D=M
+@THIS
+M=D
+@R14
+D=M
+@3
+A=D-A
+D=M
+@ARG
+M=D
+@R14
+D=M
+@4
+A=D-A
+D=M
+@LCL
+M=D
+@R15
+A=M
+0;JMP

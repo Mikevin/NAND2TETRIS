@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using VMTranslator.Translating;
 using VMTranslator.Types;
@@ -48,12 +47,12 @@ namespace VMTranslator.Writing
 
             var initializationString = new StringBuilder();
             initializationString.Append("//initialization\n");
+            initializationString.Append(GenerateSegmentInitializationString("TMP", "5"));
             initializationString.Append(GenerateSegmentInitializationString("SP", "256"));
             initializationString.Append(GenerateSegmentInitializationString("LCL", "300"));
             initializationString.Append(GenerateSegmentInitializationString("ARG", "400"));
             initializationString.Append(GenerateSegmentInitializationString("THIS", "3000"));
             initializationString.Append(GenerateSegmentInitializationString("THAT", "3010"));
-            initializationString.Append(GenerateSegmentInitializationString("TMP", "5"));
             initializationString.Append("//initialization end\n");
             _streamWriter.Write(initializationString.ToString());
         }
@@ -122,17 +121,47 @@ namespace VMTranslator.Writing
 
         public void WriteCall(string name, int argsCount)
         {
-            throw new NotImplementedException();
+
         }
 
         public void WriteReturn()
         {
-            throw new NotImplementedException();
+            var returnString = new StringBuilder();
+            //store LCL address in register 14
+            returnString.Append("@LCL\nD=M\n@R14\nM=D\n");
+            //store return address in register 15
+            returnString.Append("@R14\nD=M\n@5\nA=D-A\nD=M\n@R15\nM=D\n");
+            _streamWriter.Write(returnString.ToString());
+            returnString.Clear();
+            //reposition the return value for the caller
+            WritePushPop(CommandType.Pop, "argument", 0);
+            //restore caller's sp by setting @SP to ARG+1
+            returnString.Append("@ARG\nD=M\nD=D+1\n@SP\nM=D\n");
+            //restore callers that
+            returnString.Append("@R14\nD=M\n@1\nA=D-A\nD=M\n@THAT\nM=D\n");
+            //restore callers this
+            returnString.Append("@R14\nD=M\n@2\nA=D-A\nD=M\n@THIS\nM=D\n");
+            //restore callers arg
+            returnString.Append("@R14\nD=M\n@3\nA=D-A\nD=M\n@ARG\nM=D\n");
+            //restore callers lcl
+            returnString.Append("@R14\nD=M\n@4\nA=D-A\nD=M\n@LCL\nM=D\n");
+            //goto return addresss
+            returnString.Append("@R15\nA=M\n0;JMP\n");
+            _streamWriter.Write(returnString.ToString());
+
+            currentFunction = string.Empty;
         }
 
         public void WriteFunction(string name, int localsCount)
         {
-            throw new NotImplementedException();
+            currentFunction = name;
+            int count = 0;
+            while (count < localsCount)
+            {
+                WritePushPop(CommandType.Push, "constant", 0);
+                count++;
+            }
+            WriteLabel("f");
         }
 
         public void Close()

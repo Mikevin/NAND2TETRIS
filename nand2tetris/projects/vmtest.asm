@@ -1,0 +1,80 @@
+//initialization
+@5
+D=A
+@TMP
+M=D
+@256
+D=A
+@SP
+M=D
+@300
+D=A
+@LCL
+M=D
+@400
+D=A
+@ARG
+M=D
+@3000
+D=A
+@THIS
+M=D
+@3010
+D=A
+@THAT
+M=D
+//initialization end
+//start Push local 0
+@LCL
+D=M
+@0
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end Push local 0
+//start Push local 1
+@LCL
+D=M
+@1
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//end Push local 1
+//add
+@SP
+M=M-1
+@SP
+A=M
+D=M
+@SP
+M=M-1
+@SP
+A=M
+D=D+M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//add end
+//not
+@SP
+M=M-1
+@SP
+A=M
+D=M
+D=!D
+@SP
+A=M
+M=D
+@SP
+M=M+1
+//not end

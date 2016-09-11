@@ -1,0 +1,4 @@
+push local 0
+push local 1
+add
+not

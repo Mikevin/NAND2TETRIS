@@ -8,7 +8,8 @@ namespace VMTranslator
 {
     static class Program
     {
-        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\08\ProgramFlow\BasicLoop\BasicLoop.vm";
+        const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\08\FunctionCalls\SimpleFunction\SimpleFunction.vm";
+        //const string InputFile = @"E:\Learning\Nand2Tetris\nand2tetris\projects\vmtest.vm";
 
         static void Main(string[] args)
         {
