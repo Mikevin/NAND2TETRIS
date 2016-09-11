@@ -1,5 +1,8 @@
 ﻿using System;
 using System.IO;
+using VMTranslator.Parsing;
+using VMTranslator.Types;
+using VMTranslator.Writing;
 
 namespace VMTranslator
 {
@@ -17,6 +20,14 @@ namespace VMTranslator
             }
             var outputFileStream = new FileStream(outputFilePath, FileMode.CreateNew);
 
+            Translate(inputFileStream, outputFileStream);
+
+            Console.WriteLine("Done.");
+            //Console.Read();
+        }
+
+        private static void Translate(FileStream inputFileStream, FileStream outputFileStream)
+        {
             var parser = new Parser(inputFileStream);
             var codeWriter = new CodeWriter(outputFileStream);
             while (parser.HasMoreCommands)
@@ -38,9 +49,6 @@ namespace VMTranslator
             }
 
             codeWriter.Close();
-
-            Console.WriteLine("Done.");
-            //Console.Read();
         }
     }
 }

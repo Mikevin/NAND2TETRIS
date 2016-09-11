@@ -43,10 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArithmeticTranslator.cs" />
-    <Compile Include="CodeWriter.cs" />
-    <Compile Include="Parser.cs" />
-    <Compile Include="PushPopTranslator.cs" />
+    <Compile Include="Translating\ArithmeticTranslator.cs" />
+    <Compile Include="Writing\CodeWriter.cs" />
+    <Compile Include="Parsing\Parser.cs" />
+    <Compile Include="Translating\PushPopTranslator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\CommandType.cs" />

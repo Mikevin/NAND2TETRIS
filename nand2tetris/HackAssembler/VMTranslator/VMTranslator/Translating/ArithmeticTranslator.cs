@@ -1,6 +1,7 @@
 ﻿using System;
+using VMTranslator.Writing;
 
-namespace VMTranslator
+namespace VMTranslator.Translating
 {
     public static class ArithmeticTranslator
     {

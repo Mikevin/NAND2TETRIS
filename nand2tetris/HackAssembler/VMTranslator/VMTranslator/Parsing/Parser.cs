@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
+using VMTranslator.Types;
 
-namespace VMTranslator
+namespace VMTranslator.Parsing
 {
     class Parser
     {
-
-        private static Regex _regex = new Regex("(?<type>[add|sub|neg|eq|gt|lt|and|or|not|push|pop]+)\\s?(?<arg1>[\\d|static|this|local|argument|that|constant|pointer|temp]+)?\\s?(?<arg2>[\\d]+)?.*", RegexOptions.Compiled);
-
         private static readonly List<string> ArithmeticBooleanCommands = new List<string>
         {
             "add",
@@ -22,6 +19,7 @@ namespace VMTranslator
             "or",
             "not"
         };
+
         public Parser(FileStream fileStream)
         {
             _streamReader = new StreamReader(fileStream);
@@ -54,30 +52,30 @@ namespace VMTranslator
         private void ParseLine(string line)
         {
             line = line.Trim();
-            var parts = line.Split(' ');
-            if (parts.Length > 0)
+            var lineParts = line.Split(' ');
+            if (lineParts.Length > 0)
             {
-                SetCommandType(parts[0]);
+                SetCommandType(lineParts[0]);
                 //set Arg1 to command string in case of Arithmetic command; as per specification
                 //Needs to happen here because normally Arg1 is only handled when the line has multiple parts
                 if (CurrentCommandType == CommandType.Arithmetic)
                 {
-                    Arg1 = parts[0];
+                    Arg1 = lineParts[0];
                 }
             }
-            if (parts.Length > 1)
+            if (lineParts.Length > 1)
             {
-                Arg1 = parts[1];
+                Arg1 = lineParts[1];
             }
-            if (parts.Length > 2)
+            if (lineParts.Length > 2)
             {
-                SetArg2(parts[2]);
+                SetArg2(lineParts[2]);
             }
         }
 
         private void SetArg2(string arg)
         {
-            short arg2 = Int16.Parse(arg);
+            short arg2 = short.Parse(arg);
             switch (CurrentCommandType)
             {
                 case CommandType.Push:

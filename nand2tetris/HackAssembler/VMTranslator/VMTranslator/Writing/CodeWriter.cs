@@ -1,10 +1,11 @@
 ﻿using System.IO;
 using System.Text;
+using VMTranslator.Translating;
 using VMTranslator.Types;
 
-namespace VMTranslator
+namespace VMTranslator.Writing
 {
-    class CodeWriter
+    internal class CodeWriter
     {
         public const string IncrementSp = "@SP\nM=M+1\n";
         public const string DecrementSp = "@SP\nM=M-1\n";
@@ -20,29 +21,37 @@ namespace VMTranslator
             _fileStream = fileStream;
             _streamWriter = new StreamWriter(_fileStream, Encoding.ASCII);
 
-            var filename = Path.GetFileName(fileStream.Name);
-            filename = filename?.Split('.')[0];
+            var filename = ParseFilenameFromPath(fileStream);
             _pushPopTranslator = new PushPopTranslator(filename);
 
-            Initialize();
+            InitializeSegments();
         }
 
-        private void Initialize()
+        private static string ParseFilenameFromPath(FileStream fileStream)
         {
-            _streamWriter.Write("//initialization\n");
-            //init SP
-            _streamWriter.Write("@256\nD=A\n@SP\nM=D\n");
-            //init lcl
-            _streamWriter.Write($"@{MemorySegment.StartingAddress(MemorySegment.SegmentType.Local)}\nD=A\n@LCL\nM=D\n");
-            //init arg
-            _streamWriter.Write($"@{MemorySegment.StartingAddress(MemorySegment.SegmentType.Argument)}\nD=A\n@ARG\nM=D\n");
-            //init this
-            _streamWriter.Write($"@{MemorySegment.StartingAddress(MemorySegment.SegmentType.This)}\nD=A\n@THIS\nM=D\n");
-            //init that
-            _streamWriter.Write($"@{MemorySegment.StartingAddress(MemorySegment.SegmentType.That)}\nD=A\n@THAT\nM=D\n");
-            //init temp
-            _streamWriter.Write($"@{MemorySegment.StartingAddress(MemorySegment.SegmentType.Temp)}\nD=A\n@TMP\nM=D\n");
-            _streamWriter.Write("//initialization end\n");
+            var filename = Path.GetFileName(fileStream.Name);
+            filename = filename?.Split('.')[0];
+            return filename;
+        }
+
+        private static string GenerateSegmentInitializationString(string identifier, string value)
+        {
+            return $"@{value}\nD=A\n@{identifier}\nM=D\n";
+        }
+
+        private void InitializeSegments()
+        {
+
+            var initializationString = new StringBuilder();
+            initializationString.Append("//initialization\n");
+            initializationString.Append(GenerateSegmentInitializationString("SP", "256"));
+            initializationString.Append(GenerateSegmentInitializationString("LCL", "300"));
+            initializationString.Append(GenerateSegmentInitializationString("ARG", "400"));
+            initializationString.Append(GenerateSegmentInitializationString("THIS", "3000"));
+            initializationString.Append(GenerateSegmentInitializationString("THAT", "3010"));
+            initializationString.Append(GenerateSegmentInitializationString("TMP", "5"));
+            initializationString.Append("//initialization end\n");
+            _streamWriter.Write(initializationString.ToString());
         }
 
         public void WriteArithmetic(string command)

@@ -3,8 +3,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using VMTranslator.Types;
+using VMTranslator.Writing;
 
-namespace VMTranslator
+namespace VMTranslator.Translating
 {
     public class PushPopTranslator
     {
