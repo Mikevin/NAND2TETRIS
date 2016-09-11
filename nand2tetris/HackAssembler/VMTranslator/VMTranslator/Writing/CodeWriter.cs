@@ -17,13 +17,16 @@ namespace VMTranslator.Writing
         private readonly StreamWriter _streamWriter;
         private readonly PushPopTranslator _pushPopTranslator;
 
+        private string currentFunction;
+        private string _fileName;
+
         public CodeWriter(FileStream fileStream)
         {
             _fileStream = fileStream;
             _streamWriter = new StreamWriter(_fileStream, Encoding.ASCII);
 
-            var filename = ParseFilenameFromPath(fileStream);
-            _pushPopTranslator = new PushPopTranslator(filename);
+            _fileName = ParseFilenameFromPath(fileStream);
+            _pushPopTranslator = new PushPopTranslator(_fileName);
 
             InitializeSegments();
         }
@@ -75,19 +78,44 @@ namespace VMTranslator.Writing
             _streamWriter.Write(pushPopString.ToString());
         }
 
+        private string GetLabelFormat(string label)
+        {
+            if (string.IsNullOrEmpty(currentFunction))
+            {
+                return $"{_fileName}.{label}";
+            }
+
+            return $"{currentFunction}${label}";
+        }
+
         public void WriteLabel(string label)
         {
-            throw new NotImplementedException();
+            var labelString = new StringBuilder();
+
+            var labelFormat = GetLabelFormat(label);
+            labelString.Append($"({labelFormat})\n");
+
+            _streamWriter.Write(labelString.ToString());
         }
 
         public void WriteGoto(string label)
         {
-            throw new NotImplementedException();
+            var gotoString = new StringBuilder();
+            var labelFormat = GetLabelFormat(label);
+            gotoString.Append($"@{labelFormat}\n");
+            gotoString.Append("0;JMP\n");
+
+            _streamWriter.Write(gotoString.ToString());
         }
 
         public void WriteIf(string label)
         {
-            throw new NotImplementedException();
+            var ifString = new StringBuilder();
+            ifString.Append(DecrementSp);
+            ifString.Append(StoreSpValueInD);
+            var labelFormat = GetLabelFormat(label);
+            ifString.Append($"@{labelFormat}\n");
+            ifString.Append("D;JNE\n");
         }
 
         public void WriteCall(string name, int argsCount)
