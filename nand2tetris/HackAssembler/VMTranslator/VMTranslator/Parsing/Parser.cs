@@ -39,7 +39,15 @@ namespace VMTranslator.Parsing
             }
 
             var line = ReadLine();
+            line = CleanLine(line);
             ParseLine(line);
+        }
+
+        private string CleanLine(string line)
+        {
+            line = line.Trim();
+            line = line.Split('/')[0].Trim();
+            return line;
         }
 
         private void ResetValues()
@@ -51,7 +59,6 @@ namespace VMTranslator.Parsing
 
         private void ParseLine(string line)
         {
-            line = line.Trim();
             var lineParts = line.Split(' ');
             if (lineParts.Length > 0)
             {

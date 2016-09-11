@@ -116,6 +116,8 @@ namespace VMTranslator.Writing
             var labelFormat = GetLabelFormat(label);
             ifString.Append($"@{labelFormat}\n");
             ifString.Append("D;JNE\n");
+
+            _streamWriter.Write(ifString.ToString());
         }
 
         public void WriteCall(string name, int argsCount)
