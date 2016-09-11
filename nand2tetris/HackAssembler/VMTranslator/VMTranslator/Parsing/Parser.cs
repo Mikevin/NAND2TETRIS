@@ -105,6 +105,24 @@ namespace VMTranslator.Parsing
                 case "pop":
                     CurrentCommandType = CommandType.Pop;
                     break;
+                case "label":
+                    CurrentCommandType = CommandType.Label;
+                    break;
+                case "if-goto":
+                    CurrentCommandType = CommandType.If;
+                    break;
+                case "goto":
+                    CurrentCommandType = CommandType.Goto;
+                    break;
+                case "function":
+                    CurrentCommandType = CommandType.Function;
+                    break;
+                case "call":
+                    CurrentCommandType = CommandType.Call;
+                    break;
+                case "return":
+                    CurrentCommandType = CommandType.Return;
+                    break;
                 default:
                     throw new InvalidDataException($"Unknown command: {command}.");
             }

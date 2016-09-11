@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using VMTranslator.Translating;
 using VMTranslator.Types;
@@ -57,17 +58,51 @@ namespace VMTranslator.Writing
         public void WriteArithmetic(string command)
         {
             var translated = ArithmeticTranslator.TranslateArithmeticCommand(command);
-            _streamWriter.Write($"//{command}\n");
-            _streamWriter.Write(translated);
-            _streamWriter.Write($"//{command} end\n");
+            var arithmeticString = new StringBuilder();
+            arithmeticString.Append($"//{command}\n");
+            arithmeticString.Append(translated);
+            arithmeticString.Append($"//{command} end\n");
+            _streamWriter.Write(arithmeticString.ToString());
         }
 
         public void WritePushPop(CommandType command, string memorySegment, int index)
         {
-            var asm = $"//start {command} {memorySegment} {index}\n";
-            asm += _pushPopTranslator.Translate(command, memorySegment, index);
-            asm += $"//end {command} {memorySegment} {index}\n";
-            _streamWriter.Write(asm);
+            var pushPopString = new StringBuilder();
+            pushPopString.Append($"//start {command} {memorySegment} {index}\n");
+            pushPopString.Append(_pushPopTranslator.Translate(command, memorySegment, index));
+            pushPopString.Append($"//end {command} {memorySegment} {index}\n");
+
+            _streamWriter.Write(pushPopString.ToString());
+        }
+
+        public void WriteLabel(string label)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteGoto(string label)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteIf(string label)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteCall(string name, int argsCount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteReturn()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteFunction(string name, int localsCount)
+        {
+            throw new NotImplementedException();
         }
 
         public void Close()

@@ -45,6 +45,26 @@ namespace VMTranslator
                     case CommandType.Arithmetic:
                         codeWriter.WriteArithmetic(parser.Arg1);
                         break;
+                    case CommandType.Label:
+                        codeWriter.WriteLabel(parser.Arg1);
+                        break;
+                    case CommandType.Goto:
+                        codeWriter.WriteGoto(parser.Arg1);
+                        break;
+                    case CommandType.If:
+                        codeWriter.WriteIf(parser.Arg1);
+                        break;
+                    case CommandType.Function:
+                        codeWriter.WriteFunction(parser.Arg1, parser.Arg2);
+                        break;
+                    case CommandType.Return:
+                        codeWriter.WriteReturn();
+                        break;
+                    case CommandType.Call:
+                        codeWriter.WriteCall(parser.Arg1, parser.Arg2);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
 
