@@ -1,3 +1,29 @@
+//initialization
+@5
+D=A
+@TMP
+M=D
+@256
+D=A
+@SP
+M=D
+@300
+D=A
+@LCL
+M=D
+@400
+D=A
+@ARG
+M=D
+@3000
+D=A
+@THIS
+M=D
+@3010
+D=A
+@THAT
+M=D
+//initialization end
 //start Push constant 0
 @0
 D=A

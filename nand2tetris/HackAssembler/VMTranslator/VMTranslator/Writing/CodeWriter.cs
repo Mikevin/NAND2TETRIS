@@ -14,20 +14,32 @@ namespace VMTranslator.Writing
 
         private readonly FileStream _fileStream;
         private readonly StreamWriter _streamWriter;
-        private readonly PushPopTranslator _pushPopTranslator;
+        private PushPopTranslator _pushPopTranslator;
 
         private string currentFunction;
         private string _fileName;
 
-        public CodeWriter(FileStream fileStream)
+        public CodeWriter(FileStream fileStream, string filename)
         {
             _fileStream = fileStream;
             _streamWriter = new StreamWriter(_fileStream, Encoding.ASCII);
 
-            _fileName = ParseFilenameFromPath(fileStream);
+            _fileName = filename;
             _pushPopTranslator = new PushPopTranslator(_fileName);
 
             InitializeSegments();
+            Bootstrap();
+        }
+
+        public void UpdateFileName(string filename)
+        {
+            _fileName = filename;
+            _pushPopTranslator = new PushPopTranslator(_fileName);
+        }
+
+        private void Bootstrap()
+        {
+            WriteCall("Sys.init", 0);
         }
 
         private static string ParseFilenameFromPath(FileStream fileStream)
@@ -47,12 +59,12 @@ namespace VMTranslator.Writing
 
             var initializationString = new StringBuilder();
             initializationString.Append("//initialization\n");
-            initializationString.Append(GenerateSegmentInitializationString("TMP", "5"));
+            //initializationString.Append(GenerateSegmentInitializationString("TMP", "5"));
             initializationString.Append(GenerateSegmentInitializationString("SP", "256"));
-            initializationString.Append(GenerateSegmentInitializationString("LCL", "300"));
-            initializationString.Append(GenerateSegmentInitializationString("ARG", "400"));
-            initializationString.Append(GenerateSegmentInitializationString("THIS", "3000"));
-            initializationString.Append(GenerateSegmentInitializationString("THAT", "3010"));
+            //initializationString.Append(GenerateSegmentInitializationString("LCL", "300"));
+            //initializationString.Append(GenerateSegmentInitializationString("ARG", "400"));
+            //initializationString.Append(GenerateSegmentInitializationString("THIS", "3000"));
+            //initializationString.Append(GenerateSegmentInitializationString("THAT", "3010"));
             initializationString.Append("//initialization end\n");
             _streamWriter.Write(initializationString.ToString());
         }
@@ -121,7 +133,44 @@ namespace VMTranslator.Writing
 
         public void WriteCall(string name, int argsCount)
         {
+            var callString = new StringBuilder();
+            // saves the return address
+            var returnLabel = GetLabelFormat(name);
+            returnLabel = returnLabel + "return";
+            callString.Append($"@{returnLabel}\nD=A\n");
+            callString.Append(StoreDValueInSp);
+            callString.Append(IncrementSp);
+            // saves the LCL of f
+            callString.Append("@LCL\nD=M\n");
+            callString.Append(StoreDValueInSp);
+            callString.Append(IncrementSp);
+            // saves the ARG of f
+            callString.Append("@ARG\nD=M\n");
+            callString.Append(StoreDValueInSp);
+            callString.Append(IncrementSp);
+            // saves the THIS of f
+            callString.Append("@THIS\nD=M\n");
+            callString.Append(StoreDValueInSp);
+            callString.Append(IncrementSp);
+            // saves the THAT of f
+            callString.Append("@THAT\nD=M\n");
+            callString.Append(StoreDValueInSp);
+            callString.Append(IncrementSp);
+            // repositions SP for g
+            callString.Append("@SP\nD=M\n");
+            callString.Append("@5\nD=D-A\n");
+            callString.Append($"@{argsCount}\nD=D-A\n");
+            callString.Append("@ARG\nM=D\n");
+            // repositions LCL for g
+            callString.Append("@LCL\nD=M\n");
+            callString.Append("@SP\nM=D\n");
 
+            _streamWriter.Write(callString.ToString());
+
+            // transfers control to g
+            WriteGoto(name);
+            // the generated symbol
+            WriteLabel(returnLabel);
         }
 
         public void WriteReturn()
