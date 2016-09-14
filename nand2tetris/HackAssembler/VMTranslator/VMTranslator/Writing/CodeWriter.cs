@@ -14,30 +14,22 @@ namespace VMTranslator.Writing
 
         private readonly FileStream _fileStream;
         private readonly StreamWriter _streamWriter;
-        private PushPopTranslator _pushPopTranslator;
+        private readonly PushPopTranslator _pushPopTranslator;
 
-        private string currentFunction;
-        private string _fileName;
+        private string _currentFunction;
+        private readonly string _sourceFileName;
 
         public CodeWriter(FileStream fileStream, string filename)
         {
             _fileStream = fileStream;
             _streamWriter = new StreamWriter(_fileStream, Encoding.ASCII);
 
-            _fileName = filename;
-            _pushPopTranslator = new PushPopTranslator(_fileName);
+            _sourceFileName = filename;
+            _pushPopTranslator = new PushPopTranslator(_sourceFileName);
 
-            InitializeSegments();
-            Bootstrap();
         }
 
-        public void UpdateFileName(string filename)
-        {
-            _fileName = filename;
-            _pushPopTranslator = new PushPopTranslator(_fileName);
-        }
-
-        private void Bootstrap()
+        public void Bootstrap()
         {
             WriteCall("Sys.init", 0);
         }
@@ -54,7 +46,7 @@ namespace VMTranslator.Writing
             return $"@{value}\nD=A\n@{identifier}\nM=D\n";
         }
 
-        private void InitializeSegments()
+        public void InitializeSegments()
         {
 
             var initializationString = new StringBuilder();
@@ -91,12 +83,12 @@ namespace VMTranslator.Writing
 
         private string GetLabelFormat(string label)
         {
-            if (string.IsNullOrEmpty(currentFunction))
+            if (string.IsNullOrEmpty(_currentFunction))
             {
-                return $"{_fileName}.{label}";
+                return $"{_sourceFileName}.{label}";
             }
 
-            return $"{currentFunction}${label}";
+            return $"{_currentFunction}${label}";
         }
 
         public void WriteLabel(string label)
@@ -198,12 +190,12 @@ namespace VMTranslator.Writing
             returnString.Append("@R15\nA=M\n0;JMP\n");
             _streamWriter.Write(returnString.ToString());
 
-            currentFunction = string.Empty;
+            _currentFunction = string.Empty;
         }
 
         public void WriteFunction(string name, int localsCount)
         {
-            currentFunction = name;
+            _currentFunction = name;
             int count = 0;
             while (count < localsCount)
             {

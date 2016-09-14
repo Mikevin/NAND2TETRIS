@@ -10,6 +10,8 @@ namespace VMTranslator
     {
         public static void TranslateFile(string sourceFilePath, string targetFilePath)
         {
+            DeleteOldTarget(targetFilePath);
+
             var inputStream = new FileStream(sourceFilePath, FileMode.Open);
             var outputStream = new FileStream(targetFilePath, FileMode.Create);
 
@@ -17,6 +19,8 @@ namespace VMTranslator
 
             var parser = new Parser(inputStream);
             var codeWriter = new CodeWriter(outputStream, filename);
+            codeWriter.InitializeSegments();
+            codeWriter.Bootstrap();
             RunTranslation(parser, codeWriter);
 
             codeWriter.Close();
@@ -24,8 +28,7 @@ namespace VMTranslator
 
         public static void TranslateDirectory(string sourceDirectoryPath, string targetFilePath)
         {
-            var outputStream = new FileStream(targetFilePath, FileMode.Create);
-            var codeWriter = new CodeWriter(outputStream, "");
+            DeleteOldTarget(targetFilePath);
 
             var directoryInfo = new DirectoryInfo(sourceDirectoryPath);
             var sourceFiles = directoryInfo.EnumerateFiles("*.vm", SearchOption.AllDirectories);
@@ -33,17 +36,25 @@ namespace VMTranslator
 
             foreach (var sourceFile in sourceFiles)
             {
+                var outputStream = new FileStream(targetFilePath, FileMode.Append);
+                var codeWriter = new CodeWriter(outputStream, sourceFile.Name);
+
                 var inputStream = sourceFile.OpenRead();
                 var parser = new Parser(inputStream);
 
-                codeWriter.UpdateFileName(sourceFile.Name);
-
-
                 RunTranslation(parser, codeWriter);
-                inputStream.Close();
-            }
 
-            codeWriter.Close();
+                inputStream.Close();
+                codeWriter.Close();
+            }
+        }
+
+        private static void DeleteOldTarget(string targetFilePath)
+        {
+            if (File.Exists(targetFilePath))
+            {
+                File.Delete(targetFilePath);
+            }
         }
 
         private static void RunTranslation(Parser parser, CodeWriter codeWriter)
