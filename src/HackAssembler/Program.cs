@@ -39,7 +39,6 @@ namespace HackAssembler
 
         private static void RunOptionsAndReturnExitCode(Options opts)
         {
-            //const string path = @"E:\Learning\Nand2Tetris\nand2tetris\projects\06\pong\Pong.asm";
             var path = opts.InputPath;
             if (!File.Exists(opts.InputPath))
             {
