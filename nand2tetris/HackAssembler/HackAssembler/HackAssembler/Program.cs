@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 
 namespace HackAssembler
 {
@@ -6,19 +7,13 @@ namespace HackAssembler
     {
         private static void Main(string[] args)
         {
-            var path = @"E:\Learning\Nand2Tetris\nand2tetris\projects\06\pong\Pong.asm";
+            const string path = @"E:\Learning\Nand2Tetris\nand2tetris\projects\06\pong\Pong.asm";
+            var lines = File.ReadAllLines(path).ToList();
+            var assembler = new Assembler(lines);
+            var result = assembler.Assemble();
 
-            var main = new Main(path);
-            var result = main.Translate();
 
-            using (var writer =
-                new StreamWriter(path + ".hack"))
-            {
-                foreach (var line in result)
-                {
-                    writer.WriteLine(line);
-                }
-            }
+            File.WriteAllLines(path + ".hack", result);
         }
     }
 }

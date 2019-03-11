@@ -2,65 +2,68 @@
 
 namespace HackAssembler
 {
-    public static class SymbolTable
+    public class SymbolTable
     {
-        private static readonly Dictionary<string, int> SymbolDict = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _symbolDict = new Dictionary<string, int>();
+        private int _LabelCount = 0;
 
-        static SymbolTable()
+        public SymbolTable()
         {
-            SymbolDict.Add("R0", 0);
-            SymbolDict.Add("R1", 1);
-            SymbolDict.Add("R2", 2);
-            SymbolDict.Add("R3", 3);
-            SymbolDict.Add("R4", 4);
-            SymbolDict.Add("R5", 5);
-            SymbolDict.Add("R6", 6);
-            SymbolDict.Add("R7", 7);
-            SymbolDict.Add("R8", 8);
-            SymbolDict.Add("R9", 9);
-            SymbolDict.Add("R10", 10);
-            SymbolDict.Add("R11", 11);
-            SymbolDict.Add("R12", 12);
-            SymbolDict.Add("R13", 13);
-            SymbolDict.Add("R14", 14);
-            SymbolDict.Add("R15", 15);
+            _symbolDict.Add("R0", 0);
+            _symbolDict.Add("R1", 1);
+            _symbolDict.Add("R2", 2);
+            _symbolDict.Add("R3", 3);
+            _symbolDict.Add("R4", 4);
+            _symbolDict.Add("R5", 5);
+            _symbolDict.Add("R6", 6);
+            _symbolDict.Add("R7", 7);
+            _symbolDict.Add("R8", 8);
+            _symbolDict.Add("R9", 9);
+            _symbolDict.Add("R10", 10);
+            _symbolDict.Add("R11", 11);
+            _symbolDict.Add("R12", 12);
+            _symbolDict.Add("R13", 13);
+            _symbolDict.Add("R14", 14);
+            _symbolDict.Add("R15", 15);
 
-            SymbolDict.Add("SCREEN", 16384);
-            SymbolDict.Add("KBD", 24576);
+            _symbolDict.Add("SCREEN", 16384);
+            _symbolDict.Add("KBD", 24576);
 
-            SymbolDict.Add("SP", 0);
-            SymbolDict.Add("LCL", 1);
-            SymbolDict.Add("ARG", 2);
-            SymbolDict.Add("THIS", 3);
-            SymbolDict.Add("THAT", 4);
+            _symbolDict.Add("SP", 0);
+            _symbolDict.Add("LCL", 1);
+            _symbolDict.Add("ARG", 2);
+            _symbolDict.Add("THIS", 3);
+            _symbolDict.Add("THAT", 4);
         }
 
-        public static int NextAddress { get; private set; } = 16;
+        private int _currentVariableAddress  = 16;
 
-        public static void AddEntry(string symbol, int address)
+        public void AddVariable(string symbol)
         {
-            if (SymbolDict.ContainsKey(symbol))
+            if (!_symbolDict.ContainsKey(symbol))
             {
-                return;
-            }
-
-            SymbolDict.Add(symbol, address);
-
-            if (address == NextAddress)
-            {
-                NextAddress++;
+                _symbolDict.Add(symbol, _currentVariableAddress);
+                _currentVariableAddress++;
             }
         }
 
-        public static bool Contains(string symbol)
+        public void AddLabel(string name, int i)
         {
-            return SymbolDict.ContainsKey(symbol);
+            if (_symbolDict.ContainsKey(name)) return;
+            var index = i - _LabelCount;
+            _symbolDict.Add(name, index);
+            _LabelCount++;
         }
 
-        public static int GetAddress(string symbol)
+        public bool Contains(string symbol)
+        {
+            return _symbolDict.ContainsKey(symbol);
+        }
+
+        public int GetAddress(string symbol)
         {
             int value;
-            if (SymbolDict.TryGetValue(symbol, out value))
+            if (_symbolDict.TryGetValue(symbol, out value))
             {
                 return value;
             }
