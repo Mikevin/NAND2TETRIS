@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28621.142
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackAssembler", "HackAssembler\HackAssembler.csproj", "{C8CE3831-1F0C-4781-8366-30CA1AC77D5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMTranslator", "..\VMTranslator\VMTranslator\VMTranslator.csproj", "{D7896525-4967-4001-80B7-01E1A0E4E46F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMTranslator", "VMTranslator\VMTranslator.csproj", "{D7896525-4967-4001-80B7-01E1A0E4E46F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19F6451C-48AA-42FF-817E-781E96FD3389}
 	EndGlobalSection
 EndGlobal
