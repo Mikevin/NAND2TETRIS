@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using VMTranslator.Parsing;
 using VMTranslator.Types;
 using VMTranslator.Writing;
@@ -20,7 +21,6 @@ namespace VMTranslator
             var parser = new Parser(inputStream);
             var codeWriter = new CodeWriter(outputStream, filename);
             codeWriter.InitializeSegments();
-            codeWriter.Bootstrap();
             RunTranslation(parser, codeWriter);
 
             codeWriter.Close();
@@ -32,12 +32,17 @@ namespace VMTranslator
 
             var directoryInfo = new DirectoryInfo(sourceDirectoryPath);
             var sourceFiles = directoryInfo.EnumerateFiles("*.vm", SearchOption.AllDirectories);
+            bool initialized = false;
 
-
-            foreach (var sourceFile in sourceFiles)
+            foreach (var sourceFile in sourceFiles.Reverse())
             {
                 var outputStream = new FileStream(targetFilePath, FileMode.Append);
                 var codeWriter = new CodeWriter(outputStream, sourceFile.Name);
+                if (!initialized)
+                {
+                    codeWriter.InitializeSegments();
+                    initialized = true;
+                }
 
                 var inputStream = sourceFile.OpenRead();
                 var parser = new Parser(inputStream);

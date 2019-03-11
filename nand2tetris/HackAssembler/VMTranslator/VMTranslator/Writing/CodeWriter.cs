@@ -29,11 +29,6 @@ namespace VMTranslator.Writing
 
         }
 
-        public void Bootstrap()
-        {
-            WriteCall("Sys.init", 0);
-        }
-
         private static string ParseFilenameFromPath(FileStream fileStream)
         {
             var filename = Path.GetFileName(fileStream.Name);
@@ -52,7 +47,7 @@ namespace VMTranslator.Writing
             var initializationString = new StringBuilder();
             initializationString.Append("//initialization\n");
             //initializationString.Append(GenerateSegmentInitializationString("TMP", "5"));
-            initializationString.Append(GenerateSegmentInitializationString("SP", "256"));
+            initializationString.Append(GenerateSegmentInitializationString("SP", "261"));
             //initializationString.Append(GenerateSegmentInitializationString("LCL", "300"));
             //initializationString.Append(GenerateSegmentInitializationString("ARG", "400"));
             //initializationString.Append(GenerateSegmentInitializationString("THIS", "3000"));
@@ -104,7 +99,7 @@ namespace VMTranslator.Writing
         public void WriteGoto(string label)
         {
             var gotoString = new StringBuilder();
-            var labelFormat = GetLabelFormat(label);
+            var labelFormat = label + "$f";
             gotoString.Append($"@{labelFormat}\n");
             gotoString.Append("0;JMP\n");
 
@@ -127,8 +122,7 @@ namespace VMTranslator.Writing
         {
             var callString = new StringBuilder();
             // saves the return address
-            var returnLabel = GetLabelFormat(name);
-            returnLabel = returnLabel + "return";
+            var returnLabel = GetLabelFormat(name + "return");
             callString.Append($"@{returnLabel}\nD=A\n");
             callString.Append(StoreDValueInSp);
             callString.Append(IncrementSp);
@@ -154,15 +148,15 @@ namespace VMTranslator.Writing
             callString.Append($"@{argsCount}\nD=D-A\n");
             callString.Append("@ARG\nM=D\n");
             // repositions LCL for g
-            callString.Append("@LCL\nD=M\n");
-            callString.Append("@SP\nM=D\n");
-
+            callString.Append(StoreSpValueInD);
+            callString.Append("@LCL\nM=D" +
+                              "\n");
             _streamWriter.Write(callString.ToString());
 
             // transfers control to g
             WriteGoto(name);
             // the generated symbol
-            WriteLabel(returnLabel);
+            WriteLabel(name + "return");
         }
 
         public void WriteReturn()
