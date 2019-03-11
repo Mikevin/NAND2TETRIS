@@ -16,7 +16,6 @@ namespace HackAssembler
             _lines = lines;
         }
 
-
         public List<string> Assemble()
         {
             _symbolTable = new SymbolTable();
@@ -88,9 +87,9 @@ namespace HackAssembler
         private string TranslateCodeCommand(CodeCommand command)
         {
             var binary = "111";
-            binary += Code.Comp(command.Comp);
-            binary += Code.Dest(command.Dest);
-            binary += Code.Jump(command.Jump);
+            binary += TranslateInstruction.Comp(command.Comp);
+            binary += TranslateInstruction.Dest(command.Dest);
+            binary += TranslateInstruction.Jump(command.Jump);
 
             return binary;
         }
